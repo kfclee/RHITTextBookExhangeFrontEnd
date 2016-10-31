@@ -1,3 +1,43 @@
+(function () {
+    "use strict";
+    var apiUrl = "localhost:3000/books";
+    var book;
+    var seller;
+
+    // Load book from browser session storage
+    function loadBook() {
+        var error = false;
+        var bookToUpdateString;
+        try {
+            bookToViewString = sessionStorage.getItem("bookToView");
+        } catch (e) {
+            alert("Error when reading from Session Storage " + e);
+            error = true;
+            window.location = "index.html";
+            return false;
+        }
+        if (!error) {
+            book = JSON.parse(bookToViewString);
+        }
+    }
+
+    // Load seller from browser session storage
+    function loadSeller() {
+        var error = false;
+        var sellerString;
+        try {
+            sellerString = sessionStorage.getItem("sellerToView");
+        } catch (e) {
+            alert("Error when reading from Session Storage " + e);
+            error = true;
+            window.location = "index.html";
+            return false;
+        }
+        if (!error) {
+            seller = JSON.parse(sellerString);
+        }
+    }
+
 function loadImage() {
     var bookImage = document.getElementById("book-image");
     var image = bookImage.appendChild(document.createElement('img'));
@@ -14,17 +54,17 @@ function loadBookInfo() {
     var price = document.getElementById("price");    
 
     var titleText = title.appendChild(document.createElement('p'));
-    titleText.textContent = "Book Title";
+    titleText.textContent = book.title;
     var authorText = author.appendChild(document.createElement('p'));
-    authorText.textContent = "Author Name"
+    authorText.textContent = book.author;
     var isbnText = isbn.appendChild(document.createElement('p'));
-    isbnText.textContent = "123456789";
+    isbnText.textContent = book.isbn;
     var conditionText = condition.appendChild(document.createElement('p'));
-    conditionText.textContent = "Barely Used";
+    conditionText.textContent = book.condition;
     var subjectText = subject.appendChild(document.createElement('p'));
-    subjectText.textContent = "Physics";
+    subjectText.textContent = book.subject;
     var priceText = price.appendChild(document.createElement('p'));
-    priceText.textContent = "$45.99";
+    priceText.textContent = book.price;
 
 }
 
@@ -67,7 +107,9 @@ function setup() {
     var favButton = document.getElementById("fav-button");
 }
 
-$(window).on('load', function () {
-    //load in initial state
-    setup();
-})
+    $(document).ready(function () {
+        loadBook();
+        loadSeller();
+        setup();
+    });
+})();
