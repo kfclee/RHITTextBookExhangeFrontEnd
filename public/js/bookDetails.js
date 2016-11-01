@@ -1,6 +1,6 @@
 (function () {
     "use strict";
-    var apiUrl = "http://localhost:3000/books/5817fb15fde9722044e5a583";
+    var apiUrl = "http://localhost:3000/books/";
     var book;
     var seller;
     var editForm = false;
