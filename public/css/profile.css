@@ -1,0 +1,39 @@
+#main-div {
+	min-height: 1000px;
+}
+
+#info {
+
+}
+
+#img {
+	display: inline-block;
+	float: left;
+	width: 30px;
+}
+
+div#info:nth-child(0)  {
+	float: left;
+}
+
+#info div:nth-child(1) {
+	display: inline-block;
+	float: right;
+	width: auto;
+}
+
+#books {
+
+}
+
+#books div {
+	width: 60%;
+}
+
+#selling {
+
+}
+
+#buying {
+
+}
