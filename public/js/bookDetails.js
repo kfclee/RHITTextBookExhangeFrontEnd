@@ -3,6 +3,7 @@
     var apiUrl = "localhost:3000/books";
     var book;
     var seller;
+    var editForm = false;
 
     // Load book from browser session storage
     function loadBook() {
@@ -21,6 +22,66 @@
         }
     }
 
+    function saveBook() {
+        $.ajax({
+            url: apiUrl + book._id,
+            type: 'PUT',
+            data: book,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    //redirect to their profile?
+                } else {
+                    console.log("Book info could not be updated");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
+            }
+        });
+        return;
+    }
+
+    function createBook() {
+        $.ajax({
+            url: apiUrl,
+            type: 'POST',
+            data: book,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    //redirect to the page where they can't edit the info?
+                } else {
+                    console.log("Book could not be created");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
+            }
+        });
+        return;
+    }
+
+    function deleteBook() {
+        $.ajax({
+            url: apiUrl + book._id,
+            type: 'DELETE',
+            data: book,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    //redirect to their profile?
+                } else {
+                    console.log("Book could not be deleted");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
+            }
+        });
+        return;
+    }
+        
     // Load seller from browser session storage
     function loadSeller() {
         var error = false;
@@ -100,14 +161,21 @@ function setup() {
     var bookDiv = document.getElementById("book-info");
     var sellerDiv = document.getElementById("seller-info");
 
-    loadImage();
-    loadBookInfo();
-    loadSellerInfo();
+    if (editForm) {
+        loadForms();
+    } else {
+        loadImage();
+        loadBookInfo();
+        loadSellerInfo();
+    }
     
     var favButton = document.getElementById("fav-button");
 }
 
     $(document).ready(function () {
+        if (window.location.pathname.indexOf('editBookDetails') > -1) {
+            editForm = true;
+        }
         loadBook();
         loadSeller();
         setup();
