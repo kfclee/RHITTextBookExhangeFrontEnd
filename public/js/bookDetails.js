@@ -1,6 +1,6 @@
 (function () {
     "use strict";
-    var apiUrl = "localhost:3000/books";
+    var apiUrl = "http://localhost:3000/books/5817fb15fde9722044e5a583";
     var book;
     var seller;
     var editForm = false;
@@ -8,7 +8,7 @@
     // Load book from browser session storage
     function loadBook() {
         var error = false;
-        var bookToUpdateString;
+        var bookToViewString;
         try {
             bookToViewString = sessionStorage.getItem("bookToView");
         } catch (e) {
@@ -20,6 +20,25 @@
         if (!error) {
             book = JSON.parse(bookToViewString);
         }
+    }
+
+    function getBook() {
+        $.ajax({
+            url: apiUrl + book._id,
+            type: 'GET',
+            data: book,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    book = data;
+                } else {
+                    console.log("Book info could not be updated");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
+            }
+        })
     }
 
     function saveBook() {
@@ -102,10 +121,11 @@
     function loadImage() {
         var bookImage = document.getElementById("book-image");
         var image = bookImage.appendChild(document.createElement('img'));
-        image.setAttribute('src', '../images/book_placeholder.jpg');
+        image.setAttribute('src', 'images/book_placeholder.jpg');
     }
 
     function loadBookInfo() {
+        //getBook();
         var bookDiv = document.getElementById("book-info");
         var title = document.getElementById("title");
         var author = document.getElementById("author");
@@ -117,15 +137,15 @@
         var titleText = title.appendChild(document.createElement('p'));
         titleText.textContent = book.title;
         var authorText = author.appendChild(document.createElement('p'));
-        authorText.textContent = book.author;
+        authorText.textContent = book.authors;
         var isbnText = isbn.appendChild(document.createElement('p'));
-        isbnText.textContent = book.isbn;
+        isbnText.textContent = book.ISBN;
         var conditionText = condition.appendChild(document.createElement('p'));
-        conditionText.textContent = book.condition;
-        var subjectText = subject.appendChild(document.createElement('p'));
-        subjectText.textContent = book.subject;
-        var priceText = price.appendChild(document.createElement('p'));
-        priceText.textContent = book.price;
+        conditionText.textContent = book.class;
+        // var subjectText = subject.appendChild(document.createElement('p'));
+        // subjectText.textContent = book.subject;
+        // var priceText = price.appendChild(document.createElement('p'));
+        // priceText.textContent = book.price;
 
     }
 
@@ -161,13 +181,13 @@
         var bookDiv = document.getElementById("book-info");
         var sellerDiv = document.getElementById("seller-info");
 
-        if (editForm) {
-            loadForms();
-        } else {
-            loadImage();
+        // if (editForm) {
+        //     loadForms();
+        // } else {
+        //     loadImage();
             loadBookInfo();
-            loadSellerInfo();
-        }
+        //    loadSellerInfo();
+        //}
         
         var favButton = document.getElementById("fav-button");
     }
@@ -177,7 +197,8 @@
             editForm = true;
         }
         loadBook();
-        loadSeller();
+        loadImage();
+       // loadSeller();
         setup();
     });
 })();
