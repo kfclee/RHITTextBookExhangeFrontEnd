@@ -128,13 +128,13 @@
         var authorText = author.appendChild(document.createElement('p'));
         authorText.textContent = book.authors;
         var isbnText = isbn.appendChild(document.createElement('p'));
-        isbnText.textContent = book.ISBN;
+        isbnText.textContent = "ISBN: " + book.ISBN;
         var conditionText = condition.appendChild(document.createElement('p'));
         conditionText.textContent = book.class;
         // var subjectText = subject.appendChild(document.createElement('p'));
         // subjectText.textContent = book.subject;
-        // var priceText = price.appendChild(document.createElement('p'));
-        // priceText.textContent = book.price;
+         var priceText = price.appendChild(document.createElement('p'));
+         priceText.textContent = "$" + order.price;
 
     }
 
@@ -156,7 +156,7 @@
         emailText.textContent = "Send " + user.firstName + " an email!";
 
         var followersText = followers.appendChild(document.createElement('p'));
-        followersText.textContent = "Current post followers: 6";
+        followersText.textContent = "Current post followers: " + order.favoritedCount;
         var dateText = date.appendChild(document.createElement('p'));
         dateText.textContent = "Originally posted on: 10/20/2016";
 
