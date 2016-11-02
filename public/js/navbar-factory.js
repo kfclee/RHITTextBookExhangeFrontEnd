@@ -2,13 +2,13 @@ window.onload = function() {
 	document.getElementById('navbar').innerHTML = 
 	'<ol class="nav">'+
 				'<li>'+
-					'<a href="">Homepage</a>'+
+					'<a href="../public/home.html">Homepage</a>'+
 				'</li>'+
 				'<li>'+
-					'<a href="">Selling</a>'+
+					'<a href="../public/selling.html">Selling</a>'+
 				'</li>'+
 				'<li>'+
-					'<a href="">Buying</a>'+
+					'<a href="../public/buying.html">Buying</a>'+
 				'</li>'+
 			'</ol>';
 	}
