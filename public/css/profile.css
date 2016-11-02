@@ -1,39 +1,109 @@
 #main-div {
+	height: auto;
 	min-height: 1000px;
+	padding-top: 2%;
+	border-collapse: collapse;
+	border: 1px solid #C1C7C9;
 }
 
 #info {
-
+	padding-left: 5%;
+	padding-right: 5%;
+	height: 400px;
 }
 
-#img {
-	display: inline-block;
+
+div#img  {
 	float: left;
-	width: 30px;
-}
-
-div#info:nth-child(0)  {
-	float: left;
-}
-
-#info div:nth-child(1) {
 	display: inline-block;
-	float: right;
-	width: auto;
+	height: 100%;
+	/*width: 50%;	*/
+}
+
+#details {
+	display: inline-block;
+	margin-top: 10%;
+	margin-left: 2%; 
+	font-size: 20px;
 }
 
 #books {
 
 }
 
-#books div {
-	width: 60%;
+#books > div {
+	width: 49%;
 }
 
 #selling {
+	display: inline-block;
+	float: left;
+	width: 30%;
+	text-align: center;
+	height: 100%;
+	min-height: 1000px;
+	padding-top: 2%;
+}
 
+#editProfile a {
+	float: right;
+	display: inline-block;
+	background-color: #f8f8f8;
+	border: 1px solid #C1C7C9;
+	border-radius: 5px;
+	height: 15px;
+	width: 100px;
+	/*display: block;*/
+    text-align: center;
+    font-size: 14px;
+    padding: 10px 16px;
+    text-decoration: none;
+    color: black;
+}
+
+#editProfile a:hover {
+	background-color: #dcdcdc;
 }
 
 #buying {
+	display: inline-block;
+	float: right;
+	width: 30%;
+	text-align: center;
+	height: 100%;
+	min-height: 1000px;
+	padding-top: 2%;
+	border-left: solid #001111;
+}
 
+.bookdivs {
+	height: 100%;
+	width: 60%;
+}
+
+.bookdivs > div {
+	margin: 5px 5px 5px 5px;
+	height: 20%;
+	/*height: */
+	overflow: auto; /* This is how you fix the weird "height of 0, div not fitting contents" issue! (Specific to when you have contents floated left/right) */
+}
+
+.bookdivs div div:nth-child(1) {
+	display: inline-block;
+	/*float: left;*/
+}
+
+.bookdivs div div:nth-child(2) {
+	display: inline-block;
+	float: left;
+}
+
+.bookdivs div div p {
+	margin-top: 2px; 
+}
+
+.bookdivs div div img {
+	float: left;
+	width: 80px;
+	height: 80px;
 }
