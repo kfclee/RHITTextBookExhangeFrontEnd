@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/kfclee/RHITTextBookExhangeFrontEnd#readme",
   "dependencies": {
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "serve-favicon": "^2.3.0"
   }
 }

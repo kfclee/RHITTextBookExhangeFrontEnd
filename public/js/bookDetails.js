@@ -1,16 +1,21 @@
 (function () {
     "use strict";
-    var apiUrl = "localhost:3000/books";
+    var apiUrl = "http://localhost:3000/books/";
     var book;
-    var seller;
+    var user;
+    var order;
     var editForm = false;
 
     // Load book from browser session storage
     function loadBook() {
         var error = false;
-        var bookToUpdateString;
+        var bookToViewString;
+        var orderToViewString;
+        var buyerToViewString;
         try {
             bookToViewString = sessionStorage.getItem("bookToView");
+            orderToViewString = sessionStorage.getItem("orderToView");
+            buyerToViewString = sessionStorage.getItem("buyerToView");
         } catch (e) {
             alert("Error when reading from Session Storage " + e);
             error = true;
@@ -19,7 +24,28 @@
         }
         if (!error) {
             book = JSON.parse(bookToViewString);
+            user = JSON.parse(buyerToViewString);
+            order = JSON.parse(orderToViewString);
         }
+    }
+
+    function getBook() {
+        $.ajax({
+            url: apiUrl + book._id,
+            type: 'GET',
+            data: book,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    book = data;
+                } else {
+                    console.log("Book info could not be updated");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
+            }
+        })
     }
 
     function saveBook() {
@@ -81,28 +107,11 @@
         });
         return;
     }
-        
-    // Load seller from browser session storage
-    function loadSeller() {
-        var error = false;
-        var sellerString;
-        try {
-            sellerString = sessionStorage.getItem("sellerToView");
-        } catch (e) {
-            alert("Error when reading from Session Storage " + e);
-            error = true;
-            window.location = "index.html";
-            return false;
-        }
-        if (!error) {
-            seller = JSON.parse(sellerString);
-        }
-    }
 
     function loadImage() {
         var bookImage = document.getElementById("book-image");
         var image = bookImage.appendChild(document.createElement('img'));
-        image.setAttribute('src', '../images/book_placeholder.jpg');
+        image.setAttribute('src', 'images/book_placeholder.jpg');
     }
 
     function loadBookInfo() {
@@ -117,19 +126,19 @@
         var titleText = title.appendChild(document.createElement('p'));
         titleText.textContent = book.title;
         var authorText = author.appendChild(document.createElement('p'));
-        authorText.textContent = book.author;
+        authorText.textContent = book.authors;
         var isbnText = isbn.appendChild(document.createElement('p'));
-        isbnText.textContent = book.isbn;
+        isbnText.textContent = "ISBN: " + book.ISBN;
         var conditionText = condition.appendChild(document.createElement('p'));
-        conditionText.textContent = book.condition;
-        var subjectText = subject.appendChild(document.createElement('p'));
-        subjectText.textContent = book.subject;
-        var priceText = price.appendChild(document.createElement('p'));
-        priceText.textContent = book.price;
+        conditionText.textContent = book.class;
+        // var subjectText = subject.appendChild(document.createElement('p'));
+        // subjectText.textContent = book.subject;
+         var priceText = price.appendChild(document.createElement('p'));
+         priceText.textContent = "$" + order.price;
 
     }
 
-    function loadSellerInfo() {
+    function loadBuyerInfo() {
         var sellerDiv = document.getElementById("seller-info");
 
         var sellerName = document.getElementById("seller-name");
@@ -140,14 +149,14 @@
         var sellerComments = document.getElementById("seller-comments");
 
         var sellerNameText = sellerName.appendChild(document.createElement('p'));
-        sellerNameText.textContent = "Seller: John Doe";
+        sellerNameText.textContent = "Seller: " +user.firstName + " " + user.lastName;
         var sellerRatingText = sellerRating.appendChild(document.createElement('p'));
-        sellerRatingText.textContent = "Rating : 95%";
+        sellerRatingText.textContent = "Rating : " + user.rating + "%";
         var emailText = email.appendChild(document.createElement('p'));
-        emailText.textContent = "Send John and email!";
+        emailText.textContent = "Send " + user.firstName + " an email!";
 
         var followersText = followers.appendChild(document.createElement('p'));
-        followersText.textContent = "Current post followers: 6";
+        followersText.textContent = "Current post followers: " + order.favoritedCount;
         var dateText = date.appendChild(document.createElement('p'));
         dateText.textContent = "Originally posted on: 10/20/2016";
 
@@ -161,13 +170,13 @@
         var bookDiv = document.getElementById("book-info");
         var sellerDiv = document.getElementById("seller-info");
 
-        if (editForm) {
-            loadForms();
-        } else {
-            loadImage();
+        // if (editForm) {
+        //     loadForms();
+        // } else {
+        //     loadImage();
             loadBookInfo();
-            loadSellerInfo();
-        }
+            loadBuyerInfo();
+        //}
         
         var favButton = document.getElementById("fav-button");
     }
@@ -177,7 +186,7 @@
             editForm = true;
         }
         loadBook();
-        loadSeller();
+        loadImage();
         setup();
     });
 })();
