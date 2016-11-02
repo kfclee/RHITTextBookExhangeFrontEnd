@@ -2,12 +2,12 @@
     "use strict";
     var apiUrl = "http://localhost:3000/";
     var books;
-    var buyOrders;
-    var buyers;
+    var sellOrders;
+    var sellers;
 
     function setup() {
-        getBuyOrders();
-        getBuyers();
+        getSellOrders();
+        getSellers();
         getBooks();
     }
 
@@ -30,16 +30,16 @@
         })
     }
 
-    function getBuyOrders() {
+    function getSellOrders() {
         $.ajax({
-            url: apiUrl + "buyOrders",
+            url: apiUrl + "sellOrders",
             type: 'GET',
             dataType: 'JSON',
             success: function (data) {
                 if (data) {
-                    buyOrders = data;
+                    sellOrders = data;
                 } else {
-                    console.log("Buy order info could not get got");
+                    console.log("Sell order info could not get got");
                 }
             },
             error: function (req, status, err) {
@@ -48,14 +48,14 @@
         })
     }
 
-    function getBuyers() {
+    function getSellers() {
         $.ajax({
             url: apiUrl + "users",
             type: 'GET',
             dataType: 'JSON',
             success: function (data) {
                 if (data) {
-                    buyers = data;
+                    sellers = data;
                 } else {
                     console.log("User info could not get got");
                 }
@@ -70,21 +70,22 @@
         var listDiv = document.getElementById("book-list");
         console.log(booksToDisplay);
         booksToDisplay.forEach(function (book) {
-            var bookDiv = listDiv.appendChild(document.createElement('div'));
-            bookDiv.className = "book-div";
+           
 
             var thisOrder;
-            var thisBuyer;
-            buyOrders.forEach(function (order) {
+            var thisSeller;
+            sellOrders.forEach(function (order) {
                 if (order.textbook === book._id) {
                     thisOrder = order;
-                    console.log("buy order found")
+                    console.log("sell order found")
                     return;
                 }
                 return;
             })
 
             if (thisOrder) {
+                var bookDiv = listDiv.appendChild(document.createElement('div'));
+                bookDiv.className = "book-div";
                 var img = $('<img id="book-cover">');
                 img.attr('src', 'images/textbookcover.jpg');
                 img.appendTo(bookDiv);
@@ -98,18 +99,17 @@
                 price.addClass('book-info');
                 price.appendTo(bookDiv);
 
-                buyers.forEach(function (buyer) {
-                    if (thisOrder.buyer === buyer._id) {
-                        thisBuyer = buyer;
-                        console.log("buyer found");
+                sellers.forEach(function (seller) {
+                    if (thisOrder.seller === seller._id) {
+                        thisSeller = seller;
+                        console.log("seller found");
                         return;
                     }
                     return;
                 })
-
                 
                 img.click(function () {
-                    bookClickHandler(book, thisOrder, thisBuyer);
+                    bookClickHandler(book, thisOrder, thisSeller);
                 });
             }
         });
@@ -131,8 +131,8 @@
         }
 
         var bookToView = books.filter(bookWithID)[0];
-        var orderToView = buyOrders.filter(orderWithID)[0];
-        var buyerToView = buyers.filter(buyerWithID)[0];
+        var orderToView = sellOrders.filter(orderWithID)[0];
+        var buyerToView = sellers.filter(buyerWithID)[0];
 
         try {
             // serialize it into a string
