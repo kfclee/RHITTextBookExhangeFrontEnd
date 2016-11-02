@@ -42,6 +42,9 @@
 			price: 'price4'
 	}];
 
+	var isSellinghtml = " is selling:</p></div>";
+	var isBuyinghtml = " is looking for:</p></div>";
+
 	for (var i = 0; i < profileData.length; i++){
 		var html = "<div id='img'><img src=" + profileData[i].image + "></img></div>";
 		html += "<div id='details'><p>" + profileData[i].firstName + " " + profileData[i].lastName + "</p>";
@@ -51,24 +54,39 @@
 		html += "<p>Rating: " + profileData[i].rating + "%</p>";
 		html += "</div>";
 		// console.log(searchdiv);
+		isSellinghtml = "<div class='header'><p>" + profileData[i].firstName + isSellinghtml;
+		isBuyinghtml = "<div class='header'><p>" + profileData[i].firstName + isBuyinghtml;
 		var info = document.getElementById("info");
+		console.log(info);
 		
 		info.innerHTML += html;
 	}
+
+	var sellingdiv = document.getElementById('selling');
+	sellingdiv.innerHTML += isSellinghtml;
+	console.log(sellingdiv);
 	for (var i = 0; i < selling.length; i++){
 		var html = "<div><div><p>"+selling[i].title+"</p>";
 		html+="<p>"+selling[i].price+"</p></div>";
 		html += "<div><img src=" + selling[i].image + "></img></div></div></br>";
-		var sellingdiv = document.getElementById('selling');
 
 		sellingdiv.innerHTML += html;
 	}
+	var buyingdiv = document.getElementById('buying');
+	console.log(buyingdiv);
+	buyingdiv.innerHTML += isBuyinghtml;
 	for (var i = 0; i < buying.length; i++){
 		var html = "<div><div><p>"+buying[i].title+"</p>";
 		html+="<p>"+buying[i].price+"</p></div>";
 		html += "<div><img src=" + buying[i].image + "></img></div></div></br>";
-		var buyingdiv = document.getElementById('buying');
 
 		buyingdiv.innerHTML += html;
 	}
+
+
+	var addNewButton = "<button class='newBook' href=''>+ Add New</button>";
+	sellingdiv.innerHTML += addNewButton;
+	buyingdiv.innerHTML += addNewButton;
+
+
 })();
