@@ -74,11 +74,11 @@
         buyOrders.forEach(function (order) {
             var thisOrder;
             var thisBuyer;
-            var book;
-            booksToDisplay.forEach(function (thisBook) {
-                if (order.textbook === thisBook._id) {
+            var thisBook;
+            booksToDisplay.forEach(function (book) {
+                if (order.textbook === book._id) {
                     thisOrder = order;
-                    book = thisBook;
+                    thisBook = book;
                     return;
                 }
                 return;
@@ -91,7 +91,7 @@
                 img.attr('src', 'images/textbookcover.jpg');
                 img.appendTo(bookDiv);
 
-                var title = $('<span />').html(book.title);
+                var title = $('<span />').html(thisBook.title);
                 title.addClass('book-info');
                 title.addClass('book-title');
                 title.appendTo(bookDiv);
@@ -110,7 +110,7 @@
 
                 
                 img.click(function () {
-                    bookClickHandler(book, thisOrder, thisBuyer);
+                    bookClickHandler(thisBook, thisOrder, thisBuyer);
                 });
             }
         });
