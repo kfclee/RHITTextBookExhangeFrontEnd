@@ -131,10 +131,10 @@
         isbnText.textContent = "ISBN: " + book.ISBN;
         var conditionText = condition.appendChild(document.createElement('p'));
         conditionText.textContent = book.class;
-        // var subjectText = subject.appendChild(document.createElement('p'));
-        // subjectText.textContent = book.subject;
-         var priceText = price.appendChild(document.createElement('p'));
-         priceText.textContent = "$" + order.price;
+        var subjectText = subject.appendChild(document.createElement('p'));
+        subjectText.textContent = book.subject;
+        var priceText = price.appendChild(document.createElement('p'));
+        priceText.textContent = "$" + order.price;
 
     }
 
@@ -170,13 +170,8 @@
         var bookDiv = document.getElementById("book-info");
         var sellerDiv = document.getElementById("seller-info");
 
-        // if (editForm) {
-        //     loadForms();
-        // } else {
-        //     loadImage();
-            loadBookInfo();
-            loadBuyerInfo();
-        //}
+        loadBookInfo();
+        loadBuyerInfo();
         
         var favButton = document.getElementById("fav-button");
     }

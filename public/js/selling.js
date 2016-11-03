@@ -171,9 +171,18 @@
 
     }
 
-    function filterBooksBySubject(subject) {
 
+    function filterBooksBySubject(subject) {
+        var newBooks = [];
+        books.forEach(function(book) {
+            if (book.subject === subject) {
+                newBooks.push(book);
+            }
+        });
+
+        displayBooks(newBooks);
     }
+
 
     function filterBooksByPrice(price) {
         if (price === "low") {
