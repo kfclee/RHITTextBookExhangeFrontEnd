@@ -9,6 +9,7 @@
         getBuyOrders();
         getBuyers();
         getBooks();
+        getSortForms();
     }
 
     function getBooks() {
@@ -68,28 +69,29 @@
 
     function displayBooks(booksToDisplay) {
         var listDiv = document.getElementById("book-list");
+        listDiv.innerHTML = "";
         console.log(booksToDisplay);
-        booksToDisplay.forEach(function (book) {
-            var bookDiv = listDiv.appendChild(document.createElement('div'));
-            bookDiv.className = "book-div";
-
+        buyOrders.forEach(function (order) {
             var thisOrder;
             var thisBuyer;
-            buyOrders.forEach(function (order) {
+            var thisBook;
+            booksToDisplay.forEach(function (book) {
                 if (order.textbook === book._id) {
                     thisOrder = order;
-                    console.log("buy order found")
+                    thisBook = book;
                     return;
                 }
                 return;
             })
 
             if (thisOrder) {
+                var bookDiv = listDiv.appendChild(document.createElement('div'));
+                bookDiv.className = "book-div";
                 var img = $('<img id="book-cover">');
                 img.attr('src', 'images/textbookcover.jpg');
                 img.appendTo(bookDiv);
 
-                var title = $('<span />').html(book.title);
+                var title = $('<span />').html(thisBook.title);
                 title.addClass('book-info');
                 title.addClass('book-title');
                 title.appendTo(bookDiv);
@@ -101,7 +103,6 @@
                 buyers.forEach(function (buyer) {
                     if (thisOrder.buyer === buyer._id) {
                         thisBuyer = buyer;
-                        console.log("buyer found");
                         return;
                     }
                     return;
@@ -109,7 +110,7 @@
 
                 
                 img.click(function () {
-                    bookClickHandler(book, thisOrder, thisBuyer);
+                    bookClickHandler(thisBook, thisOrder, thisBuyer);
                 });
             }
         });
@@ -152,6 +153,64 @@
             window.location = "bookDetails.html";
             return false;
         }
+    }
+
+    function getSortForms() {
+        var sortBySubject = document.getElementById("sort-subject");
+        var sortByPrice = document.getElementById("sort-price");
+        var findByIsbn = document.getElementById("sort-isbn");
+
+        sortBySubject.addEventListener("change", function() {
+            var subject = sortBySubject.value;
+            filterBooksBySubject(subject);
+        })
+
+        sortByPrice.addEventListener("change", function() {
+            var price = sortByPrice.value;
+            filterBooksByPrice(price);
+        })
+
+    }
+
+    function filterBooksBySubject(subject) {
+        var newBooks = [];
+        books.forEach(function(book) {
+            if (book.subject === subject) {
+                newBooks.push(book);
+            }
+        });
+
+        displayBooks(newBooks);
+    }
+
+    function filterBooksByPrice(price) {
+        if (price === "low") {
+            buyOrders.sort(lowFirst);
+        } else {
+            buyOrders.sort(highFirst);
+        }
+
+        displayBooks(books);
+    }
+
+    function lowFirst(a, b) {
+        if (a.price > b.price) {
+            return 1;
+        }
+        if (a.price < b.price) {
+            return -1;
+        }
+        return 0;
+    }
+
+    function highFirst(a, b) {
+        if (a.price > b.price) {
+            return -1;
+        }
+        if (a.price < b.price) {
+            return 1;
+        }
+        return 0;
     }
 
     $(window).on('load', function () {
