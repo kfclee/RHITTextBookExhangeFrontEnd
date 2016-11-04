@@ -46,7 +46,7 @@
 	var isBuyinghtml = " is looking for:</p></div>";
 
 	for (var i = 0; i < profileData.length; i++){
-		var html = "<div id='img'><img src=" + profileData[i].image + "></img></div>";
+		var html = "<div id='img'><img id='profilePic' src=" + profileData[i].image + "></img></div>";
 		html += "<div id='details'><p>" + profileData[i].firstName + " " + profileData[i].lastName + "</p>";
 		html += "<p>" + profileData[i].year + ", " + profileData[i].major + " major</p>";
 		html += "<p>Bought: " + profileData[i].bought + " books</p>";
@@ -90,3 +90,26 @@
 
 
 })();
+
+function myFunction() {
+	var elm = document.getElementById('myFile'),
+    img = elm.files[0],
+    fileName = img.name, // not path
+    fileSize = img.size; // bytes
+    console.log(img);
+    console.log(fileName);
+    console.log(fileSize);
+
+// By Parsing File
+	var reader = new FileReader(),
+    binary, base64;
+	reader.addEventListener('loadend', function () {
+    	binary = reader.result; // binary data (stored as string), unsafe for most actions
+    	base64 = btoa(binary); // base64 data, safer but takes up more memory
+    	// console.log(binary);
+    	console.log(base64);
+		var imgTag = document.getElementById("profilePic");
+		imgTag.setAttribute("src", "data:image/png;base64," + base64);
+	}, false);
+	reader.readAsBinaryString(img);
+}
