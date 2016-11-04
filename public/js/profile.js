@@ -106,8 +106,8 @@ function myFunction() {
 	reader.addEventListener('loadend', function () {
     	binary = reader.result; // binary data (stored as string), unsafe for most actions
     	base64 = btoa(binary); // base64 data, safer but takes up more memory
-    	console.log(binary);
-    	// console.log(base64);
+    	// console.log(binary);
+    	console.log(base64);
 		var imgTag = document.getElementById("profilePic");
 		imgTag.setAttribute("src", "data:image/png;base64," + base64);
 	}, false);
