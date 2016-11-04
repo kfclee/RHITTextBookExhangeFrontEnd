@@ -51,26 +51,6 @@
     float: right;
 }
 
-#editBook a {
-	float: right;
-	display: inline-block;
-	background-color: #f8f8f8;
-	border: 1px solid #C1C7C9;
-	border-radius: 5px;
-	height: 15px;
-	width: 100px;
-	/*display: block;*/
-    text-align: center;
-    font-size: 14px;
-    padding: 10px 16px;
-    text-decoration: none;
-    color: black;
-}
-
-#editBook a:hover {
-	background-color: #dcdcdc;
-}
-
 .modal {
     display: none;
     position: fixed;

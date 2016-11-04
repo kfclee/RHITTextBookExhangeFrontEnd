@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>profile page</title>
 	<script type="text/javascript" src="./js/navbar-factory.js"></script>
@@ -7,14 +8,13 @@
 	<link rel="stylesheet" type="text/css" href="./css/navbar.css">
 
 </head>
+
 <body>
 	<div>
 		<div id="navbar"></div>
 		<div id="main-div">
 			<div id="info">
-				<div id="editProfile">
-					<a href="">Edit Profile</a>
-				</div>
+				<button id="editProfile" onclick="editProfile()"></button>
 			</div>
 			<div id="books">
 				<div id="selling" class="bookdivs"></div>
@@ -22,6 +22,45 @@
 			</div>
 		</div>
 	</div>
+	<div id="myModal" class="modal">
+		<div class="modal-content">
+			<span class="close">x</span>
+			<table class="modalTable">
+				<tr>
+					<td id="firstName" class="title">First Name:</td>
+					<td id="firstNameInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="lastName" class="title">Last Name:</td>
+					<td id="lastNameInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="image" class="title">Image:</td>
+					<td id="imageInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="year" class="title">Year:</td>
+					<td id="yearInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="major" class="title">Major:</td>
+					<td id="majorInput" class="textArea"></td>
+				</tr>
+			</table>
+			<button id="submit" class="modalButton" onclick="closeModal()">Submit</button>
+		</div>
+	</div>
+
+	<div id="ratingModal" class="modal">
+		<div class="modal-content">
+			<span class="close">x</span>
+			<table class="modalTable">
+				<tr>
+				</tr>
+			</table>
+		</div>
+	</div>
 	<script type="text/javascript" src="./js/profile.js"></script>
 </body>
+
 </html>
