@@ -107,4 +107,22 @@
 
 .modalTable {
 	width: 100%;
+}	
+
+.close, .closeList, .closeEdit {
+    color: black;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#favorited{
+    visibility: hidden;
 }

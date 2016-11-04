@@ -5,7 +5,15 @@ var user;
 var order;
 var editForm = false;
 var isYourBook = false;
-    var editBookButton = document.getElementById("editBook");
+var editBookButton = document.getElementById("editBook");
+var authorsNode = document.getElementById("authorsInput");
+var ISBNNode = document.getElementById("ISBNInput");
+var conditionNode = document.getElementById("conditionInput");
+var courseNode = document.getElementById("courseInput");
+var subjectNode = document.getElementById("subjectInput");
+var priceNode = document.getElementById("priceInput");
+var commentsNode = document.getElementById("commentsInput");
+var titleNode = document.getElementById("titleInput");
 
 // Load book from browser session storage
 function loadBook() {
@@ -188,6 +196,9 @@ function setup() {
     console.log(editBook);
     editBook.addEventListener("click", editBook, false);
     editBookButton.innerHTML = "Favorite Book";
+    if (isYourBook) {
+        editBookButton.innerHTML = "Edit Book";
+    }
 }
 
 
@@ -218,11 +229,25 @@ function editBook() {
         authorsInput.setAttribute("cols", "30");
         authorsInput.innerHTML = book.authors;
 
-
         var ISBNInput = document.createElement("textarea");
         ISBNInput.setAttribute("rows", "1");
         ISBNInput.setAttribute("cols", "30");
         ISBNInput.innerHTML = book.ISBN;
+
+        var conditionInput = document.createElement("textarea");
+        conditionInput.setAttribute("rows", "1");
+        conditionInput.setAttribute("cols", "30");
+        conditionInput.innerHTML = book.condition;
+
+        var courseInput = document.createElement("textarea");
+        courseInput.setAttribute("rows", "1");
+        courseInput.setAttribute("cols", "30");
+        courseInput.innerHTML = book.course;
+
+        var subjectInput = document.createElement("textarea");
+        subjectInput.setAttribute("rows", "1");
+        subjectInput.setAttribute("cols", "30");
+        subjectInput.innerHTML = book.subject;
 
         var priceInput = document.createElement("textarea");
         priceInput.setAttribute("rows", "1");
@@ -235,45 +260,49 @@ function editBook() {
         commentsInput.innerHTML = order.commentsText;
 
 
-        var authorsNode = document.getElementById("authorsInput");
-        var ISBNNode = document.getElementById("ISBNInput");
-        var priceNode = document.getElementById("priceInput");
-        var commentsNode = document.getElementById("commentsInput");
-        var titleNode = document.getElementById("titleInput");
 
 
         titleNode.appendChild(titleInput);
         authorsNode.appendChild(authorsInput);
         ISBNNode.appendChild(ISBNInput);
+        conditionNode.appendChild(conditionInput);
+        courseNode.appendChild(courseInput);
+        subjectNode.appendChild(subjectInput);
         priceNode.appendChild(priceInput);
         commentsNode.appendChild(commentsInput);
 
 
         modal.style.display = "block";
         span.onclick = function () {
-            modal.style.display = "none";
-            authorsNode.removeChild(authorsNode.firstChild);
-            ISBNNode.removeChild(ISBNNode.firstChild);
-            priceNode.removeChild(priceNode.firstChild);
-            titleNode.removeChild(titleNode.firstChild);
-            commentsNode.removeChild(commentsNode.firstChild);
+            closeModal();
 
         }
         window.onclick = function (event) {
             if (event.target == modal) {
-                modal.style.display = "none";
-                authorsNode.removeChild(authorsNode.firstChild);
-                ISBNNode.removeChild(ISBNNode.firstChild);
-                priceNode.removeChild(priceNode.firstChild);
-                titleNode.removeChild(titleNode.firstChild);
-                commentsNode.removeChild(commentsNode.firstChild);
+                closeModal();
             }
         }
     } else {
+        var favorited = document.getElementById("favorited");
         if (editBookButton.innerHTML == "Favorite Book") {
             editBookButton.innerHTML = "Unfavorite Book";
+            favorited.style.visibility = "visible";
         } else {
             editBookButton.innerHTML = "Favorite Book";
+            favorited.style.visibility = "hidden";
         }
     }
+}
+
+function closeModal() {
+    var modal = document.getElementById('myModal');
+    modal.style.display = "none";
+    authorsNode.removeChild(authorsNode.firstChild);
+    ISBNNode.removeChild(ISBNNode.firstChild);
+    conditionNode.removeChild(conditionNode.firstChild);
+    courseNode.removeChild(courseNode.firstChild);
+    subjectNode.removeChild(subjectNode.firstChild);
+    priceNode.removeChild(priceNode.firstChild);
+    titleNode.removeChild(titleNode.firstChild);
+    commentsNode.removeChild(commentsNode.firstChild);
 }

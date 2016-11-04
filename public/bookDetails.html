@@ -23,6 +23,7 @@
                 <span id="course" class="book"></span>
                 <span id="subject" class="book"></span>
                 <span id="price" class="book"></span>
+                <span id="favorited">You have favorited this book.</span>
             </div>
         </div>
         <hr>
@@ -58,15 +59,27 @@
 					<td id="ISBNInput" class="textArea"></td>
 				</tr>
 				<tr>
+					<td id="condition" class="title">Condition:</td>
+					<td id="conditionInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="course" class="title">Class:</td>
+					<td id="courseInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="subject" class="title">Subject:</td>
+					<td id="subjectInput" class="textArea"></td>
+				</tr>
+				<tr>
 					<td id="price" class="title">Price:</td>
 					<td id="priceInput" class="textArea"></td>
 				</tr>
 				<tr>
-					<td id="comments" class="title">CM:</td>
+					<td id="comments" class="title">Comments:</td>
 					<td id="commentsInput" class="textArea"></td>
 				</tr>
 			</table>
-			<button id="submit" class="modalButton">Submit</button>
+			<button id="submit" class="modalButton" onclick="closeModal()">Submit</button>
 		</div>
 	</div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
