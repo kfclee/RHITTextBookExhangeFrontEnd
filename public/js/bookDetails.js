@@ -146,7 +146,6 @@ function loadBookInfo() {
     courseText.textContent = "Class: " + book.course;
     var priceText = price.appendChild(document.createElement('p'));
     priceText.textContent = "$" + order.price;
-
 }
 
 function loadBuyerInfo() {
@@ -204,10 +203,23 @@ function setup() {
 
 
 
+<<<<<<< HEAD
 
 $(document).ready(function () {
     if (window.location.pathname.indexOf('editBookDetails') > -1) {
         editForm = true;
+=======
+    function setup() {
+        console.log("setting up");
+
+        var bookDiv = document.getElementById("book-info");
+        var sellerDiv = document.getElementById("seller-info");
+
+        loadBookInfo();
+        loadBuyerInfo();
+        
+        var favButton = document.getElementById("fav-button");
+>>>>>>> refs/remotes/origin/master
     }
     loadBook();
     loadImage();

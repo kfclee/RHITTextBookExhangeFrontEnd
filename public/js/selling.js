@@ -9,6 +9,7 @@
         getSellOrders();
         getSellers();
         getBooks();
+        getSortForms();
     }
 
     function getBooks() {
@@ -68,16 +69,16 @@
 
     function displayBooks(booksToDisplay) {
         var listDiv = document.getElementById("book-list");
+        listDiv.innerHTML = "";
         console.log(booksToDisplay);
-        booksToDisplay.forEach(function (book) {
-           
-
+        sellOrders.forEach(function (order) {
             var thisOrder;
             var thisSeller;
-            sellOrders.forEach(function (order) {
+            var thisBook;
+            booksToDisplay.forEach(function (book) {
                 if (order.textbook === book._id) {
                     thisOrder = order;
-                    console.log("sell order found")
+                    thisBook = book;
                     return;
                 }
                 return;
@@ -90,7 +91,7 @@
                 img.attr('src', 'images/textbookcover.jpg');
                 img.appendTo(bookDiv);
 
-                var title = $('<span />').html(book.title);
+                var title = $('<span />').html(thisBook.title);
                 title.addClass('book-info');
                 title.addClass('book-title');
                 title.appendTo(bookDiv);
@@ -102,14 +103,13 @@
                 sellers.forEach(function (seller) {
                     if (thisOrder.seller === seller._id) {
                         thisSeller = seller;
-                        console.log("seller found");
                         return;
                     }
                     return;
                 })
                 
                 img.click(function () {
-                    bookClickHandler(book, thisOrder, thisSeller);
+                    bookClickHandler(thisBook, thisOrder, thisSeller);
                 });
             }
         });
@@ -132,7 +132,7 @@
 
         var bookToView = books.filter(bookWithID)[0];
         var orderToView = sellOrders.filter(orderWithID)[0];
-        var buyerToView = sellers.filter(buyerWithID)[0];
+        var sellerToView = sellers.filter(buyerWithID)[0];
 
         try {
             // serialize it into a string
@@ -142,8 +142,8 @@
             var orderToViewString = JSON.stringify(orderToView);
             sessionStorage.setItem("orderToView", orderToViewString);
             
-            var buyerToViewString = JSON.stringify(buyerToView);
-            sessionStorage.setItem("buyerToView", buyerToViewString);
+            var sellerToViewString = JSON.stringify(sellerToView);
+            sessionStorage.setItem("buyerToView", sellerToViewString);
         } catch (e) {
             alert("Error when writing to Session Storage " + e);
             error = true;
@@ -152,6 +152,66 @@
             window.location = "bookDetails.html";
             return false;
         }
+    }
+
+        function getSortForms() {
+        var sortBySubject = document.getElementById("sort-subject");
+        var sortByPrice = document.getElementById("sort-price");
+        var findByIsbn = document.getElementById("sort-isbn");
+
+        sortBySubject.addEventListener("change", function() {
+            var subject = sortBySubject.value;
+            filterBooksBySubject(subject);
+        })
+
+        sortByPrice.addEventListener("change", function() {
+            var price = sortByPrice.value;
+            filterBooksByPrice(price);
+        })
+
+    }
+
+
+    function filterBooksBySubject(subject) {
+        var newBooks = [];
+        books.forEach(function(book) {
+            if (book.subject === subject) {
+                newBooks.push(book);
+            }
+        });
+
+        displayBooks(newBooks);
+    }
+
+
+    function filterBooksByPrice(price) {
+        if (price === "low") {
+            sellOrders.sort(lowFirst);
+        } else {
+            sellOrders.sort(highFirst);
+        }
+
+        displayBooks(books);
+    }
+
+    function lowFirst(a, b) {
+        if (a.price > b.price) {
+            return 1;
+        }
+        if (a.price < b.price) {
+            return -1;
+        }
+        return 0;
+    }
+
+    function highFirst(a, b) {
+        if (a.price > b.price) {
+            return -1;
+        }
+        if (a.price < b.price) {
+            return 1;
+        }
+        return 0;
     }
 
     $(window).on('load', function () {
