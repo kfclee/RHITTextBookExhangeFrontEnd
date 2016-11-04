@@ -4,7 +4,7 @@ var book;
 var user;
 var order;
 var editForm = false;
-var isYourBook = false;
+var isYourBook = true;
 var editBookButton = document.getElementById("editBook");
 var authorsNode = document.getElementById("authorsInput");
 var ISBNNode = document.getElementById("ISBNInput");
@@ -124,6 +124,7 @@ function loadImage() {
 }
 
 function loadBookInfo() {
+    console.log("loading book info");
     var bookDiv = document.getElementById("book-info");
     var title = document.getElementById("title");
     var author = document.getElementById("author");
@@ -173,58 +174,6 @@ function loadBuyerInfo() {
     var commentsText = sellerComments.appendChild(document.createElement('p'));
     commentsText.textContent = "Seller Comments: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi odio tortor, tempor sed turpis vel, facilisis pellentesque nulla. Cras dapibus ligula eros, quis dictum purus semper finibus. Nulla non ligula sed elit aliquam sollicitudin aliquam a                                  nibh. Nam eget ante ut lacus commodo congue et sed lacus. Integer fermentum tristique lacinia. Ut vulputate posuere lorem, a consectetur mi eleifend lacinia. Suspendisse est urna, luctus rutrum lorem et, semper semper dui.";
 }
-
-
-
-function setup() {
-    console.log("setting up");
-
-    var bookDiv = document.getElementById("book-info");
-    var sellerDiv = document.getElementById("seller-info");
-
-    // if (editForm) {
-    //     loadForms();
-    // } else {
-    //     loadImage();
-    loadBookInfo();
-    loadBuyerInfo();
-    //}
-
-    var favButton = document.getElementById("fav-button");
-    var editBook = document.getElementById("editBook");
-    console.log(editBook);
-    editBook.addEventListener("click", editBook, false);
-    editBookButton.innerHTML = "Favorite Book";
-    if (isYourBook) {
-        editBookButton.innerHTML = "Edit Book";
-    }
-}
-
-
-
-
-<<<<<<< HEAD
-
-$(document).ready(function () {
-    if (window.location.pathname.indexOf('editBookDetails') > -1) {
-        editForm = true;
-=======
-    function setup() {
-        console.log("setting up");
-
-        var bookDiv = document.getElementById("book-info");
-        var sellerDiv = document.getElementById("seller-info");
-
-        loadBookInfo();
-        loadBuyerInfo();
-        
-        var favButton = document.getElementById("fav-button");
->>>>>>> refs/remotes/origin/master
-    }
-    loadBook();
-    loadImage();
-    setup();
-});
 
 function editBook() {
     if (isYourBook) {
@@ -317,4 +266,38 @@ function closeModal() {
     priceNode.removeChild(priceNode.firstChild);
     titleNode.removeChild(titleNode.firstChild);
     commentsNode.removeChild(commentsNode.firstChild);
+}
+
+$(document).ready(function () {
+    console.log("document ready!");
+    //if (window.location.pathname.indexOf('editBookDetails') > -1) {
+        editForm = true;
+        loadBook();
+        loadImage();
+        setup();
+    //}
+});
+
+function setup() {
+    console.log("setting up");
+
+    var bookDiv = document.getElementById("book-info");
+    var sellerDiv = document.getElementById("seller-info");
+
+    // if (editForm) {
+    //     loadForms();
+    // } else {
+    //     loadImage();
+    loadBookInfo();
+    loadBuyerInfo();
+    //}
+
+    var favButton = document.getElementById("fav-button");
+    var editBook = document.getElementById("editBook");
+    console.log(editBook);
+    editBook.addEventListener("click", editBook, false);
+    editBookButton.innerHTML = "Favorite Book";
+    if (isYourBook) {
+        editBookButton.innerHTML = "Edit Book";
+    }
 }

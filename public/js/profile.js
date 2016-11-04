@@ -4,7 +4,7 @@ var imageNode = document.getElementById("imageInput");
 var yearNode = document.getElementById("yearInput");
 var majorNode = document.getElementById("majorInput");
 var ratingNode = document.getElementById("ratingInput");
-var isYourProfile = false;
+var isYourProfile = true;
 var editProfileButton = document.getElementById("editProfile");
 var profileData;
 (function () {
@@ -199,9 +199,6 @@ function closeModal() {
 	var addNewButton = "<button class='newBook' href=''>+ Add New</button>";
 	sellingdiv.innerHTML += addNewButton;
 	buyingdiv.innerHTML += addNewButton;
-
-
-})();
 
 function myFunction() {
 	var elm = document.getElementById('myFile'),
