@@ -6,6 +6,13 @@
     var order;
     var editForm = false;
 
+    Date.prototype.yyyymmdd = function() {
+        var mm = this.getMonth() + 1; // getMonth() is zero-based
+        var dd = this.getDate();
+
+        return [this.getFullYear(), !mm[1] && '0', mm, !dd[1] && '0', dd].join(''); // padding
+    };
+
     // Load book from browser session storage
     function loadBook() {
         var error = false;
@@ -153,12 +160,12 @@
         var sellerRatingText = sellerRating.appendChild(document.createElement('p'));
         sellerRatingText.textContent = "Rating : " + user.rating + "%";
         var emailText = email.appendChild(document.createElement('p'));
-        emailText.textContent = "Send " + user.firstName + " an email!";
+        emailText.innerHTML = '<a href="mailto:'+user.emailAddress+'">Send '+user.firstName+' an email!</a>';
 
         var followersText = followers.appendChild(document.createElement('p'));
         followersText.textContent = "Current post followers: " + order.favoritedCount;
         var dateText = date.appendChild(document.createElement('p'));
-        dateText.textContent = "Originally posted on: 10/20/2016";
+        dateText.textContent = "Originally posted on: "+ order.datePosted.substring(0,10);
 
         var commentsText = sellerComments.appendChild(document.createElement('p'));
         commentsText.textContent = "Seller Comments: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi odio tortor, tempor sed turpis vel, facilisis pellentesque nulla. Cras dapibus ligula eros, quis dictum purus semper finibus. Nulla non ligula sed elit aliquam sollicitudin aliquam a                                  nibh. Nam eget ante ut lacus commodo congue et sed lacus. Integer fermentum tristique lacinia. Ut vulputate posuere lorem, a consectetur mi eleifend lacinia. Suspendisse est urna, luctus rutrum lorem et, semper semper dui.";
