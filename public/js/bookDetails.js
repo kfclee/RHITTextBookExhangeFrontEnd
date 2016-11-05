@@ -133,13 +133,13 @@
         var titleText = title.appendChild(document.createElement('p'));
         titleText.textContent = book.title;
         var authorText = author.appendChild(document.createElement('p'));
-        authorText.textContent = book.authors;
+        authorText.textContent = "Written by: " + book.authors.join(', ');
         var isbnText = isbn.appendChild(document.createElement('p'));
         isbnText.textContent = "ISBN: " + book.ISBN;
         var conditionText = condition.appendChild(document.createElement('p'));
-        conditionText.textContent = book.class;
+        conditionText.textContent = "Class: " + book.class;
         var subjectText = subject.appendChild(document.createElement('p'));
-        subjectText.textContent = book.subject;
+        subjectText.textContent = "Subject: " + book.subject;
         var priceText = price.appendChild(document.createElement('p'));
         priceText.textContent = "$" + order.price;
 
@@ -158,7 +158,7 @@
         var sellerNameText = sellerName.appendChild(document.createElement('p'));
         sellerNameText.textContent = "Seller: " +user.firstName + " " + user.lastName;
         var sellerRatingText = sellerRating.appendChild(document.createElement('p'));
-        sellerRatingText.textContent = "Rating : " + user.rating + "%";
+        sellerRatingText.textContent = "Rating : " + user.rating + " stars";
         var emailText = email.appendChild(document.createElement('p'));
         emailText.innerHTML = '<a href="mailto:'+user.emailAddress+'">Send '+user.firstName+' an email!</a>';
 
@@ -167,8 +167,10 @@
         var dateText = date.appendChild(document.createElement('p'));
         dateText.textContent = "Originally posted on: "+ order.datePosted.substring(0,10);
 
-        var commentsText = sellerComments.appendChild(document.createElement('p'));
-        commentsText.textContent = "Seller Comments: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi odio tortor, tempor sed turpis vel, facilisis pellentesque nulla. Cras dapibus ligula eros, quis dictum purus semper finibus. Nulla non ligula sed elit aliquam sollicitudin aliquam a                                  nibh. Nam eget ante ut lacus commodo congue et sed lacus. Integer fermentum tristique lacinia. Ut vulputate posuere lorem, a consectetur mi eleifend lacinia. Suspendisse est urna, luctus rutrum lorem et, semper semper dui.";
+        if (order.seller) {
+            var commentsText = sellerComments.appendChild(document.createElement('p'));
+            commentsText.textContent = "Seller Comments: " + order.description;
+        }
     }
 
     function setup() {
