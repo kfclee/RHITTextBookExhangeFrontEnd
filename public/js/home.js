@@ -9,7 +9,7 @@
 		getSellOrders();
 		getUsers();
 		getBooks();
-		setTimeout(function () {populateOrders()}, 260);
+		setTimeout(function () {populateOrders()}, 150);
 	}
 
 	function getBuyOrders() {
@@ -89,8 +89,12 @@
 
 	function populateOrders() {
 		var buyDiv = document.getElementById('buy-search-div');
-		for(var i=0; i<buyOrders.length; i++) {
+		for(var i=0; i<5; i++) {
 			var thisUser, thisBook, thisOrder; 
+
+			if(!buyOrders[i]) {
+				continue;
+			}
 
 			books.forEach(function (book) {
 				if(buyOrders[i].textbook === book._id) {
@@ -111,7 +115,7 @@
 			title.innerHTML = thisBook.title;
 			textDiv.appendChild(title);
 			var price = document.createElement('p');
-			price.innerHTML = thisOrder.price;
+			price.innerHTML = "$" + thisOrder.price;
 			textDiv.appendChild(price);
 
 			var imgDiv = bookDiv.appendChild(document.createElement('div'));
@@ -127,15 +131,18 @@
 				return;
 			});
 
-    		console.log(img, thisBook, thisOrder, thisUser);
 			stupidClosures(img, thisBook, thisOrder, thisUser);
 		}
 
 // ----------------------------------------------------------------------------------------------
 
 		var sellDiv = document.getElementById('sell-search-div');
-		for(var i=0; i<sellOrders.length; i++) {
+		for(var i=0; i<5; i++) {
 			var thisUser, thisBook, thisOrder;
+
+			if(!sellOrders[i]) {
+				continue;
+			}
 
 			books.forEach(function (book) {
 				if(sellOrders[i].textbook === book._id) {
@@ -156,7 +163,7 @@
 			title.innerHTML = thisBook.title;
 			textDiv.appendChild(title);
 			var price = document.createElement('p');
-			price.innerHTML = thisOrder.price;
+			price.innerHTML = "$" + thisOrder.price;
 			textDiv.appendChild(price);
 
 			var imgDiv = bookDiv.appendChild(document.createElement('div'));
@@ -172,7 +179,6 @@
 				return;
 			});
 
-    		console.log(img, thisBook, thisOrder, thisUser);
     		stupidClosures(img, thisBook, thisOrder, thisUser);
 
 		}
