@@ -146,6 +146,9 @@
             
             var buyerToViewString = JSON.stringify(buyerToView);
             sessionStorage.setItem("buyerToView", buyerToViewString);
+
+            var buyString = JSON.stringify("buy");
+            sessionStorage.setItem("buyOrSell", buyString);
         } catch (e) {
             alert("Error when writing to Session Storage " + e);
             error = true;
