@@ -279,14 +279,13 @@ function setup() {
         editProfileButton.innerHTML = "Edit Profile";
 	}
 	getProfiles();
-	loadImage('images/user-blank.png');
 }
 
 function submit() {
 	if (isYourProfile) {
         profile.firstName = firstNameInput.value;
 		profile.lastName = lastNameInput.value;
-		profile.year = year.value;
+		profile.year = yearInput.value;
 		profile.major = majorInput.value;
 		profile.image = imageInput.value;
 		saveProfile();
@@ -419,27 +418,27 @@ function myFunction() {
 	reader.readAsBinaryString(img);
 }
 
-function profileClickHandler(profile) {
-	var error = false;
-	function profileWithID(thisProfile) {
-		return thisProfile._id === profile._id;
-	}
+// function profileClickHandler(profile) {
+// 	var error = false;
+// 	function profileWithID(thisProfile) {
+// 		return thisProfile._id === profile._id;
+// 	}
 
-	var profileToView = books.filter(profileWithID)[0];
+// 	var profileToView = books.filter(profileWithID)[0];
 
-	try {
-		// serialize it into a string
-		var profileToViewString = JSON.stringify(profileToView);
-		sessionStorage.setItem("profileToView", profileToViewString);
-	} catch (e) {
-		alert("Error when writing to Session Storage " + e);
-		error = true;
-	}
-	if (!error) {
-		window.location = "profile.html";
-		return false;
-	}
-}
+// 	try {
+// 		// serialize it into a string
+// 		var profileToViewString = JSON.stringify(profileToView);
+// 		sessionStorage.setItem("profileToView", profileToViewString);
+// 	} catch (e) {
+// 		alert("Error when writing to Session Storage " + e);
+// 		error = true;
+// 	}
+// 	if (!error) {
+// 		window.location = "profile.html";
+// 		return false;
+// 	}
+// }
 
 // Load book from browser session storage
 function loadProfile() {
@@ -476,6 +475,7 @@ function getProfiles() {
 			if (data) {
 				profile = data[0];
 				loadProfileInfo();
+				loadImage(profile.image);
 			} else {
 				console.log("Book info could not get got");
 			}

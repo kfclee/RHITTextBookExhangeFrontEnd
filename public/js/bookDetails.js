@@ -1,8 +1,9 @@
 "use strict";
-var apiUrl = "http://localhost:3000/books/";
+var apiUrl = "http://localhost:3000/";
 var book;
 var user;
 var order;
+var buyOrSell;
 var editForm = false;
 var isYourBook = true;
 var editBookButton = document.getElementById("editBook");
@@ -55,10 +56,12 @@ function loadBook() {
     var bookToViewString;
     var orderToViewString;
     var buyerToViewString;
+    var buyOrSellString;
     try {
         bookToViewString = sessionStorage.getItem("bookToView");
         orderToViewString = sessionStorage.getItem("orderToView");
         buyerToViewString = sessionStorage.getItem("buyerToView");
+        buyOrSellString = sessionStorage.getItem("buyOrSell");
     } catch (e) {
         alert("Error when reading from Session Storage " + e);
         error = true;
@@ -69,14 +72,13 @@ function loadBook() {
         book = JSON.parse(bookToViewString);
         user = JSON.parse(buyerToViewString);
         order = JSON.parse(orderToViewString);
-        console.log("order is: ");
-        console.log(order);
+        buyOrSell = JSON.parse(buyOrSellString);
     }
 }
 
 function getBook() {
     $.ajax({
-        url: apiUrl + book._id,
+        url: apiUrl + "books/" + book._id,
         type: 'GET',
         data: book,
         dataType: 'JSON',
@@ -95,9 +97,35 @@ function getBook() {
 
 function saveBook() {
     $.ajax({
-        url: apiUrl + book._id,
+        url: apiUrl + "books/" + book._id,
         type: 'PUT',
         data: book,
+        dataType: 'JSON',
+        success: function (data) {
+            if (data) {
+                loadBookInfo();
+                return false;
+            } else {
+                console.log("Book info could not be updated");
+            }
+        },
+        error: function (req, status, err) {
+            console.log(err, status, req);
+        }
+    });
+    return;
+}
+
+function saveOrder() {
+    if(buyOrSell == "buy"){
+        var urlSecondPart = "buyOrders/";
+    } else{
+        urlSecondPart = "sellOrders/";
+    }
+    $.ajax({
+        url: apiUrl + urlSecondPart + order._id,
+        type: 'PUT',
+        data: order,
         dataType: 'JSON',
         success: function (data) {
             if (data) {
@@ -167,7 +195,7 @@ function loadBookInfo() {
     console.log(book);
     authorText.textContent = book.authors;
     isbnText.textContent = "ISBN: " + book.ISBN;
-    conditionText.textContent = "Condition: " + book.condition;
+    conditionText.textContent = "Condition: " + order.condition;
     subjectText.textContent = "Subject: " + book.subject;
     courseText.textContent = "Class: " + book.course;
     priceText.textContent = "$" + order.price;
@@ -216,7 +244,7 @@ function editBook() {
 
         conditionInput.setAttribute("rows", "1");
         conditionInput.setAttribute("cols", "30");
-        conditionInput.innerHTML = book.condition;
+        conditionInput.innerHTML = order.condition;
 
         courseInput.setAttribute("rows", "1");
         courseInput.setAttribute("cols", "30");
@@ -289,11 +317,12 @@ function submit() {
         book.ISBN = ISBNInput.value;
         book.authors = authorsInput.value;
         book.subject = subjectInput.value;
-        book.condition = conditionInput.value;
+        order.condition = conditionInput.value;
         book.course = courseInput.value;
         order.price = priceInput.value;
         console.log(book);
         saveBook();
+        saveOrder();
     } else{
 
     }
