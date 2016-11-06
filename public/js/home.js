@@ -1,13 +1,15 @@
 (function() {
 	"use strict";
 	var apiUrl = "http://localhost:3000/";
-	var buyOrders, buyOrderBooks, sellOrders, sellOrderBooks;
+	var books, buyOrders, sellOrders, users;
 
 	function setup() {
 
 		getBuyOrders();
 		getSellOrders();
-		setTimeout(function () {populateOrders()}, 260);
+		getUsers();
+		getBooks();
+		setTimeout(function () {populateOrders()}, 150);
 	}
 
 	function getBuyOrders() {
@@ -27,7 +29,6 @@
             }
         });
 
-		setTimeout(function() {populateBuyOrderBooks()}, 100);
 	}
 
 	function getSellOrders() {
@@ -47,98 +48,173 @@
             }
         });
 
-        setTimeout(function () {populateSellOrderBooks()}, 100);
 	}
 
-	function populateBuyOrderBooks() {
-		buyOrderBooks = [];
-		for(var i = 0; i < buyOrders.length; i++) {
-			$.ajax({
-	            url: apiUrl + "books/" + buyOrders[i].textbook,
-	            type: 'GET',
-	            dataType: 'JSON',
-	            success: function (data) {
-	                if (data) {
-	                    buyOrderBooks.push(data);
-	                } else {
-	                    console.log("Buy order books could not get got");
-	                }
-	            },
-	            error: function (req, status, err) {
-	                console.log(err, status, req);
-	            }
-        	});
-		}
+	function getUsers() {
+		$.ajax({
+            url: apiUrl + "users",
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    users = data;
+                } else {
+                    console.log("User info could not get got");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
+            }
+        })
 	}
 
-	function populateSellOrderBooks() {
-		sellOrderBooks = [];
-		for(var i = 0; i < sellOrders.length; i++) {
-			$.ajax({
-	            url: apiUrl + "books/" + sellOrders[i].textbook,
-	            type: 'GET',
-	            dataType: 'JSON',
-	            success: function (data) {
-	                if (data) {
-	                    sellOrderBooks.push(data);
-	                } else {
-	                    console.log("Sell order books could not get got");
-	                }
-	            },
-	            error: function (req, status, err) {
-	                console.log(err, status, req);
-	            }
-        	});
-		}
-	}
 
+	function getBooks() {
+		$.ajax({
+            url: apiUrl + "books/",
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    books = data;
+                } else {
+                    console.log("Books could not get got");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
+            }
+    	});
+	}
 
 	function populateOrders() {
+		var buyDiv = document.getElementById('buy-search-div');
+		for(var i=0; i<5; i++) {
+			var thisUser, thisBook, thisOrder; 
 
-		var buyData = [{
-			image: './images/book.png',
-			title: 'book title',
-			price: 'price'
-		},
-		{
-			image: './images/book.png',
-			title: 'another title',
-			price: 'another price'
-		}];
+			if(!buyOrders[i]) {
+				continue;
+			}
 
-		var sellData = [{
-			image: './images/book.png',
-			title: 'book title',
-			price: 'Sell price'
-		},
-		{
-			image: './images/book.png',
-			title: 'another title',
-			price: 'another sell price'
-		}];
+			books.forEach(function (book) {
+				if(buyOrders[i].textbook === book._id) {
+					thisOrder = buyOrders[i];
+					thisBook = book;
+					return;
+				}
+				return;
+			});
 
-		for(var i=0; i<buyOrders.length; i++) {
-			var html = "<div><div><p>"+buyOrderBooks[i].title+"</p>";
-			html+="<p>"+buyOrders[i].price+"</p></div>";
-			// html += "<div><img src=" + buyOrderBooks[i].imagePath + "></img></div></div></br>";
-			html += "<div><img src='./images/textbookcover.jpg'></div></div></br>"
-			var searchdiv = document.getElementById('buy-search-div'); 
-			// console.log(searchdiv);
 			
-			searchdiv.innerHTML += html;
+
+			var bookDiv = buyDiv.appendChild(document.createElement('div'));
+
+			var textDiv = bookDiv.appendChild(document.createElement('div'));
+			
+			var title = document.createElement('p');
+			title.innerHTML = thisBook.title;
+			textDiv.appendChild(title);
+			var price = document.createElement('p');
+			price.innerHTML = "$" + thisOrder.price;
+			textDiv.appendChild(price);
+
+			var imgDiv = bookDiv.appendChild(document.createElement('div'));
+			var img = document.createElement('img');
+			img.setAttribute('src', 'images/textbookcover.jpg');
+			imgDiv.appendChild(img);
+
+			users.forEach(function (user) {
+				if (user._id === thisOrder.buyer) {
+					thisUser = user;
+					return;
+				}
+				return;
+			});
+
+			stupidClosures(img, thisBook, thisOrder, thisUser);
 		}
 
-		for(var i=0; i<sellOrders.length; i++) {
-			var html = "<div><div><p>"+sellOrderBooks[i].title+"</p>";
-			html+="<p>"+sellOrders[i].price+"</p></div>";
-			// html += "<div><img src=" + sellData[i].image + "></img></div></div></br>";
-			html += "<div><img src='./images/textbookcover.jpg'></div></div></br>"
-			var searchdiv = document.getElementById('sell-search-div'); 
-			// console.log(searchdiv);
+// ----------------------------------------------------------------------------------------------
+
+		var sellDiv = document.getElementById('sell-search-div');
+		for(var i=0; i<5; i++) {
+			var thisUser, thisBook, thisOrder;
+
+			if(!sellOrders[i]) {
+				continue;
+			}
+
+			books.forEach(function (book) {
+				if(sellOrders[i].textbook === book._id) {
+					thisOrder = sellOrders[i];
+					thisBook = book;
+					return;
+				}
+				return;
+			});
+
 			
-			searchdiv.innerHTML += html;
+
+			var bookDiv = sellDiv.appendChild(document.createElement('div'));
+
+			var textDiv = bookDiv.appendChild(document.createElement('div'));
+			
+			var title = document.createElement('p');
+			title.innerHTML = thisBook.title;
+			textDiv.appendChild(title);
+			var price = document.createElement('p');
+			price.innerHTML = "$" + thisOrder.price;
+			textDiv.appendChild(price);
+
+			var imgDiv = bookDiv.appendChild(document.createElement('div'));
+			var img = document.createElement('img');
+			img.setAttribute('src', 'images/textbookcover.jpg');
+			imgDiv.appendChild(img);
+
+			users.forEach(function (user) {
+				if (user._id === thisOrder.seller) {
+					thisUser = user;
+					return;
+				}
+				return;
+			});
+
+			console.log(img, thisBook, thisOrder, thisUser);
+    		stupidClosures(img, thisBook, thisOrder, thisUser);
+
 		}
 	}
+
+	function stupidClosures(img, book, order, user) {
+		img.addEventListener("click", function () {
+			console.log(book, order, user);
+			bookClickHandler(book, order, user)
+		}, false);
+
+	}
+
+	function bookClickHandler(book, order, user) {
+        var error = false;
+
+        try {
+            // serialize it into a string
+            var bookToViewString = JSON.stringify(book);
+            sessionStorage.setItem("bookToView", bookToViewString);
+            
+            var orderToViewString = JSON.stringify(order);
+            sessionStorage.setItem("orderToView", orderToViewString);
+            
+            var userToViewString = JSON.stringify(user);
+            sessionStorage.setItem("userToView", userToViewString);
+        } catch (e) {
+            alert("Error when writing to Session Storage " + e);
+            error = true;
+        }
+        if (!error) {
+            window.location = "bookDetails.html";
+            return false;
+        }
+    }
 
 	$(window).on('load', function () {
         //load in initial state

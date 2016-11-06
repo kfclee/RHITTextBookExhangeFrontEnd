@@ -1,3 +1,4 @@
+"use strict";
 var nameDiv = document.getElementById("name");
 var firstNameNode = document.getElementById("firstNameInput");
 var nameText = nameDiv.appendChild(document.createElement('p'));
@@ -31,48 +32,17 @@ var imageNode = document.getElementById("imageInput");
 var ratingNode = document.getElementById("ratingInput");
 var isYourProfile = true;
 var editProfileButton = document.getElementById("editProfile");
-var apiUrl = "http://localhost:3000/";
-var profile;
 
-"use strict";
+var apiUrl = "http://localhost:3000/";
+var books, currUser, buyOrders, sellOrders, currUserID;
+
+var isSellinghtml = " is selling:</p></div>";
+var isBuyinghtml = " is looking for:</p></div>";
+
 $(document).ready(function () {
 	setup();
-	var selling = [{
-		image: './images/book.png',
-		title: 'title1',
-		price: 'price1'
-	},
-		{
-			image: './images/book.png',
-			title: 'title2',
-			price: 'price2'
-		},
-		{
-			image: './images/book.png',
-			title: 'title3',
-			price: 'price3'
-		},
-		{
-			image: './images/book.png',
-			title: 'title4',
-			price: 'price4'
-		}];
 
-	var buying = [{
-		image: './images/book.png',
-		title: 'title3',
-		price: 'price3'
-	},
-		{
-			image: './images/book.png',
-			title: 'title4',
-			price: 'price4'
-		}];
-	var apiUrl = "http://localhost:3000/";
-	var books, currUser, buyOrders, buyOrderBooks, sellOrders, sellOrderBooks, currUserID;
 
-	var isSellinghtml = " is selling:</p></div>";
-	var isBuyinghtml = " is looking for:</p></div>";
 
 	var sellingdiv = document.getElementById('selling');
 	sellingdiv.innerHTML += isSellinghtml;
@@ -81,7 +51,6 @@ $(document).ready(function () {
 		var html = "<div><div><p>" + selling[i].title + "</p>";
 		html += "<p>" + selling[i].price + "</p></div>";
 		html += "<div><img src=" + selling[i].image + "></img></div></div></br>";
-
 		sellingdiv.innerHTML += html;
 	}
 	var buyingdiv = document.getElementById('buying');
@@ -96,11 +65,16 @@ $(document).ready(function () {
 
 	}
 });
-function setup() {
 
+function setup() {
 	getCurrentUser();
 	getBuyOrders();
 	getSellOrders();
+	getBooks();
+	editProfileButton.innerHTML = "Rate User";
+	if (isYourProfile) {
+		editProfileButton.innerHTML = "Edit Profile";
+	}
 	setTimeout(function () { populateOrders() }, 300);
 }
 
@@ -141,8 +115,24 @@ function getBuyOrders() {
 			console.log(err, status, req);
 		}
 	});
+}
 
-	setTimeout(function () { populateBuyOrderBooks() }, 100);
+function getBooks() {
+	$.ajax({
+		url: apiUrl + "books/",
+		type: 'GET',
+		dataType: 'JSON',
+		success: function (data) {
+			if (data) {
+				books = data;
+			} else {
+				console.log("Buy order books could not get got");
+			}
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
 }
 
 function getSellOrders() {
@@ -161,55 +151,16 @@ function getSellOrders() {
 			console.log(err, status, req);
 		}
 	});
-
-	setTimeout(function () { populateSellOrderBooks() }, 100);
 }
 
-function populateBuyOrderBooks() {
-	buyOrderBooks = [];
-	for (var i = 0; i < buyOrders.length; i++) {
-		$.ajax({
-			url: apiUrl + "books/" + buyOrders[i].textbook,
-			type: 'GET',
-			dataType: 'JSON',
-			success: function (data) {
-				if (data) {
-					buyOrderBooks.push(data);
-				} else {
-					console.log("Buy order books could not get got");
-				}
-			},
-			error: function (req, status, err) {
-				console.log(err, status, req);
-			}
-		});
-	}
-}
 
-function populateSellOrderBooks() {
-	sellOrderBooks = [];
-	for (var i = 0; i < sellOrders.length; i++) {
-		$.ajax({
-			url: apiUrl + "books/" + sellOrders[i].textbook,
-			type: 'GET',
-			dataType: 'JSON',
-			success: function (data) {
-				if (data) {
-					sellOrderBooks.push(data);
-				} else {
-					console.log("Sell order books could not get got");
-				}
-			},
-			error: function (req, status, err) {
-				console.log(err, status, req);
-			}
-		});
-	}
-}
 
 function populateOrders() {
-	// for (var i = 0; i < profileData.length; i++){
-	var html = "<div id='img'><img id='profilePic' src=" + currUser.profilePicture + "></img></div>";
+	isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
+	isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
+
+	// var html = "<div id='img'><img id='profilePic' src=" + currUser.profilePicture + "></img></div>";
+	var html = "<div id='img'><img id='profilePic' src='images/user-blank.png'></div>"
 	html += "<div id='details'><p>" + currUser.firstName + " " + currUser.lastName + "</p>";
 	html += "<p>" + currUser.year + ", " + currUser.major + " major</p>";
 	html += "<p>Bought: " + currUser.buyHistory.length + " books</p>";
@@ -217,253 +168,206 @@ function populateOrders() {
 	html += "<p>Rating: " + currUser.rating + "/5</p>";
 	html += "</div>";
 	// console.log(searchdiv);
-	isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
-	isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
 	var info = document.getElementById("info");
 
 	info.innerHTML += html;
-	// }
 
-	var sellingdiv = document.getElementById('selling');
-	sellingdiv.innerHTML += isSellinghtml;
+	var sellDiv = document.getElementById('selling');
+	sellDiv.innerHTML += isSellinghtml;
 	for (var i = 0; i < sellOrders.length; i++) {
-		// console.log("Seller: " + sellOrders[i].seller);
-		// console.log("CurrUser: " + currUserID);
-		if (sellOrders[i].seller === currUserID) {
-			for (var j = 0; j < sellOrderBooks.length; j++) {
-				if (sellOrders[i].textbook === sellOrderBooks[j]._id) {
+		var thisBook, thisOrder;
 
-					//IMPORTANT: When you figure whatever this equality issue is out, fix it in home.js as well. 
-
-					console.log(typeof sellOrders[i].textbook + " " + sellOrders[i].textbook);
-					console.log(typeof sellOrderBooks[i]._id + " " + sellOrderBooks[i]._id);
-					console.log(sellOrders[i].textbook === sellOrderBooks[j]._id); //what the actual fuck, JS. Go home, you're drunk
-					var html = "<div><div><p>" + sellOrderBooks[i].title + "</p>";
-					html += "<p>" + sellOrders[i].price + "</p></div>";
-					// html += "<div><img src=" + sellOrderBooks[i].imagePath + "></img></div></div></br>";
-					html += "<div><img src='./images/textbookcover.jpg'></div></div></br>"
-
-					sellingdiv.innerHTML += html;
-				}
+		books.forEach(function (book) {
+			if (sellOrders[i].textbook === book._id) {
+				thisOrder = sellOrders[i];
+				thisBook = book;
+				return;
 			}
+			return;
+		});
 
-		} else {
-			continue;
-		}
+
+		var bookDiv = sellDiv.appendChild(document.createElement('div'));
+
+		var textDiv = bookDiv.appendChild(document.createElement('div'));
+
+		var title = document.createElement('p');
+		title.innerHTML = thisBook.title;
+		textDiv.appendChild(title);
+		var price = document.createElement('p');
+		price.innerHTML = "$" + thisOrder.price;
+		textDiv.appendChild(price);
+
+		var imgDiv = bookDiv.appendChild(document.createElement('div'));
+		var img = document.createElement('img');
+		img.setAttribute('src', 'images/textbookcover.jpg');
+		img.setAttribute('id', 'sell-image' + i);
+		imgDiv.appendChild(img);
+
+		// users.forEach(function (user) {
+		// 	if (user._id === thisOrder.seller) {
+		// 		thisUser = user;
+		// 		return;
+		// 	}
+		// 	return;
+		// });
+
+		console.log(img, thisBook, thisOrder, currUser);
+		stupidClosures(img, thisBook, thisOrder, currUser);
+
 	}
-	var buyingdiv = document.getElementById('buying');
-	buyingdiv.innerHTML += isBuyinghtml;
+
+	// ----------------------------------------------------------------------------------------------
+
+
+	var buyDiv = document.getElementById('buying');
+	buyDiv.innerHTML += isBuyinghtml;
 	for (var i = 0; i < buyOrders.length; i++) {
-		if (buyOrders[i].buyer === currUserID) {
-			var html = "<div><div><p>" + buyOrderBooks[i].title + "</p>";
-			html += "<p>" + buyOrders[i].price + "</p></div>";
-			// html += "<div><img src=" + buyOrderBooks[i].imagePath + "></img></div></div></br>";
-			html += "<div><img src='./images/textbookcover.jpg'></div></div></br>"
+		var thisBook, thisOrder;
+
+		books.forEach(function (book) {
+			if (buyOrders[i].textbook === book._id) {
+				thisOrder = buyOrders[i];
+				thisBook = book;
+				return;
+			}
+			return;
+		});
 
 
-			buyingdiv.innerHTML += html;
-		} else {
-			continue;
-		}
+		var bookDiv = buyDiv.appendChild(document.createElement('div'));
+
+		var textDiv = bookDiv.appendChild(document.createElement('div'));
+
+		var title = document.createElement('p');
+		title.innerHTML = thisBook.title;
+		textDiv.appendChild(title);
+		var price = document.createElement('p');
+		price.innerHTML = "$" + thisOrder.price;
+		textDiv.appendChild(price);
+
+		var imgDiv = bookDiv.appendChild(document.createElement('div'));
+		var img = document.createElement('img');
+		img.setAttribute('src', 'images/textbookcover.jpg');
+		img.setAttribute('id', 'buy-image' + i);
+		imgDiv.appendChild(img);
+
+		// users.forEach(function (user) {
+		// 	if (user._id === thisOrder.buyer) {
+		// 		thisUser = user;
+		// 		return;
+		// 	}
+		// 	return;
+		// });
+
+		console.log(img, thisBook, thisOrder, currUser);
+		stupidClosures(img, thisBook, thisOrder, currUser);
+		// }
+
 	}
-
 
 	var addNewButton = "<button class='newBook' href=''>+ Add New</button>";
-	sellingdiv.innerHTML += addNewButton;
-	buyingdiv.innerHTML += addNewButton;
-}
+	sellDiv.innerHTML += addNewButton;
+	buyDiv.innerHTML += addNewButton;
+	// function setup() {
 
-function setup() {
-    editProfileButton.innerHTML = "Rate User";
-    if (isYourProfile) {
-        editProfileButton.innerHTML = "Edit Profile";
+	// }
+
+	function stupidClosures(img, book, order, user) {
+		img.addEventListener("click", function () {
+			console.log(book, order, user);
+			bookClickHandler(book, order, user)
+		}, false);
 	}
-	getProfiles();
+
+	function bookClickHandler(book, order, user) {
+		var error = false;
+
+		try {
+			// serialize it into a string
+			var bookToViewString = JSON.stringify(book);
+			sessionStorage.setItem("bookToView", bookToViewString);
+
+			var orderToViewString = JSON.stringify(order);
+			sessionStorage.setItem("orderToView", orderToViewString);
+
+			var userToViewString = JSON.stringify(user);
+			sessionStorage.setItem("userToView", userToViewString);
+		} catch (e) {
+			alert("Error when writing to Session Storage " + e);
+			error = true;
+		}
+		if (!error) {
+			window.location = "bookDetails.html";
+			return false;
+		}
+	}
+
 }
 
 function submit() {
 	if (isYourProfile) {
-        profile.firstName = firstNameInput.value;
-		profile.lastName = lastNameInput.value;
-		profile.year = yearInput.value;
-		profile.major = majorInput.value;
-		profile.image = imageInput.value;
+		currUser.firstName = firstNameInput.value;
+		currUser.lastName = lastNameInput.value;
+		currUser.year = yearInput.value;
+		currUser.major = majorInput.value;
+		currUser.image = imageInput.value;
 		saveProfile();
-		loadImage(profile.image);
-    } else {
+		loadImage(currUser.image);
+	} else {
 
 		$(window).on('load', function () {
 			//load in initial state
 			setup();
 		});
 
-    }
+	}
 	closeModal();
-}
-
-function editProfile() {
-    if (isYourProfile) {
-        var modal = document.getElementById('myModal');
-        var span = document.getElementsByClassName("close")[0];
-
-        firstNameInput.setAttribute("rows", "1");
-        firstNameInput.setAttribute("cols", "30");
-		console.log("profile is: ");
-		console.log(profile);
-        firstNameInput.innerHTML = profile.firstName;
-
-        lastNameInput.setAttribute("rows", "1");
-        lastNameInput.setAttribute("cols", "30");
-        lastNameInput.innerHTML = profile.lastName;
-
-        imageInput.setAttribute("rows", "1");
-        imageInput.setAttribute("cols", "30");
-        imageInput.innerHTML = profile.image;
-
-        yearInput.setAttribute("rows", "1");
-        yearInput.setAttribute("cols", "30");
-        yearInput.innerHTML = profile.year;
-
-        majorInput.setAttribute("rows", "1");
-        majorInput.setAttribute("cols", "30");
-        majorInput.innerHTML = profile.major;
-
-        firstNameNode.appendChild(firstNameInput);
-        lastNameNode.appendChild(lastNameInput);
-        imageNode.appendChild(imageInput);
-        yearNode.appendChild(yearInput);
-        majorNode.appendChild(majorInput);
-
-
-        modal.style.display = "block";
-        span.onclick = function () {
-            closeModal();
-
-        }
-        window.onclick = function (event) {
-            if (event.target == modal) {
-				console.log("this is where i am");
-				if (isYourProfile) {
-					closeModal();
-				} else {
-					closeRatingModal();
-				}
-            }
-        }
-    } else {
-        var modal = document.getElementById('ratingModal');
-        var span = document.getElementsByClassName("close")[1];
-
-        var ratingInput = document.createElement("textarea");
-        ratingInput.setAttribute("rows", "1");
-        ratingInput.setAttribute("cols", "30");
-        ratingInput.innerHTML = "1";
-
-        ratingNode.appendChild(ratingInput);
-
-        modal.style.display = "block";
-        span.onclick = function () {
-            closeRatingModal();
-
-        }
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                closeRatingModal();
-            }
-        }
-    }
 }
 
 function closeRatingModal() {
 	console.log("closing modal");
-    var modal = document.getElementById('ratingModal');
-    modal.style.display = "none";
+	var modal = document.getElementById('ratingModal');
+	modal.style.display = "none";
 	ratingNode.removeChild(ratingNode.firstChild);
 }
 
 function closeModal() {
-    var modal = document.getElementById('myModal');
-    modal.style.display = "none";
+	var modal = document.getElementById('myModal');
+	modal.style.display = "none";
 	firstNameNode.removeChild(firstNameNode.firstChild);
-    lastNameNode.removeChild(lastNameNode.firstChild);
-    imageNode.removeChild(imageNode.firstChild);
-    yearNode.removeChild(yearNode.firstChild);
-    majorNode.removeChild(majorNode.firstChild);
+	lastNameNode.removeChild(lastNameNode.firstChild);
+	imageNode.removeChild(imageNode.firstChild);
+	yearNode.removeChild(yearNode.firstChild);
+	majorNode.removeChild(majorNode.firstChild);
 }
 
 
-var addNewButton = "<button class='newBook' href=''>+ Add New</button>";
-var sellingdiv = document.getElementById("selling");
-sellingdiv.innerHTML += addNewButton;
-var buyingdiv = document.getElementById("buying");
-buyingdiv.innerHTML += addNewButton;
-
-function myFunction() {
-	var elm = document.getElementById('myFile'),
-		img = elm.files[0],
-		fileName = img.name, // not path
-		fileSize = img.size; // bytes
-
-	// By Parsing File
-	var reader = new FileReader(),
-		binary, base64;
-	reader.addEventListener('loadend', function () {
-		binary = reader.result; // binary data (stored as string), unsafe for most actions
-		base64 = btoa(binary); // base64 data, safer but takes up more memory
-		// console.log(binary);
-		// console.log(base64);
-		var imgTag = document.getElementById("profilePic");
-		imgTag.setAttribute("src", "data:image/png;base64," + base64);
-	}, false);
-	reader.readAsBinaryString(img);
-}
-
-// function profileClickHandler(profile) {
-// 	var error = false;
-// 	function profileWithID(thisProfile) {
-// 		return thisProfile._id === profile._id;
-// 	}
-
-// 	var profileToView = books.filter(profileWithID)[0];
-
-// 	try {
-// 		// serialize it into a string
-// 		var profileToViewString = JSON.stringify(profileToView);
-// 		sessionStorage.setItem("profileToView", profileToViewString);
-// 	} catch (e) {
-// 		alert("Error when writing to Session Storage " + e);
-// 		error = true;
-// 	}
-// 	if (!error) {
-// 		window.location = "profile.html";
-// 		return false;
-// 	}
-// }
 
 // Load book from browser session storage
 function loadProfile() {
-    var error = false;
-    var profileToViewString;
-    try {
-        profileToViewString = sessionStorage.getItem("profileToView");
-    } catch (e) {
-        alert("Error when reading from Session Storage " + e);
-        error = true;
-        window.location = "index.html";
-        return false;
-    }
-    if (!error) {
-        profile = JSON.parse(profileToViewString);
-    }
+	var error = false;
+	var profileToViewString;
+	try {
+		profileToViewString = sessionStorage.getItem("profileToView");
+	} catch (e) {
+		alert("Error when reading from Session Storage " + e);
+		error = true;
+		window.location = "index.html";
+		return false;
+	}
+	if (!error) {
+		currUser = JSON.parse(profileToViewString);
+	}
 }
 
 function loadProfileInfo() {
-    var profileDiv = document.getElementById("info");
-	nameText.textContent = profile.firstName + " " + profile.lastName;
-	yearText.textContent = "Year is: " + profile.year;
-	majorText.textContent = profile.major;
-	soldText.textContent = "Sold: " + profile.sellHistory.length + " books";
-	boughtText.textContent = "Bought: " + profile.buyHistory.length + " books";
+	var profileDiv = document.getElementById("info");
+	nameText.textContent = currUser.firstName + " " + currUser.lastName;
+	yearText.textContent = "Year is: " + currUser.year;
+	majorText.textContent = currUser.major;
+	soldText.textContent = "Sold: " + currUser.sellHistory.length + " books";
+	boughtText.textContent = "Bought: " + currUser.buyHistory.length + " books";
 }
 
 function getProfiles() {
@@ -473,9 +377,9 @@ function getProfiles() {
 		dataType: 'JSON',
 		success: function (data) {
 			if (data) {
-				profile = data[0];
+				currUser = data[0];
 				loadProfileInfo();
-				loadImage(profile.image);
+				loadImage(currUser.image);
 			} else {
 				console.log("Book info could not get got");
 			}
@@ -487,26 +391,98 @@ function getProfiles() {
 }
 
 function saveProfile() {
-    $.ajax({
-        url: apiUrl + "users/" + profile._id,
-        type: 'PUT',
-        data: profile,
-        dataType: 'JSON',
-        success: function (data) {
-            if (data) {
+	$.ajax({
+		url: apiUrl + "users/" + currUser._id,
+		type: 'PUT',
+		data: currUser,
+		dataType: 'JSON',
+		success: function (data) {
+			if (data) {
 				loadProfileInfo();
-                return false;
-            } else {
-                console.log("Profile info could not be updated");
-            }
-        },
-        error: function (req, status, err) {
-            console.log(err, status, req);
-        }
-    });
-    return;
+				return false;
+			} else {
+				console.log("Profile info could not be updated");
+			}
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
+	return;
 }
 
 function loadImage(imagePath) {
-    image.setAttribute('src', imagePath);
+	image.setAttribute('src', imagePath);
+}
+
+function editProfile() {
+	if (isYourProfile) {
+		var modal = document.getElementById('myModal');
+		var span = document.getElementsByClassName("close")[0];
+
+		firstNameInput.setAttribute("rows", "1");
+		firstNameInput.setAttribute("cols", "30");
+		console.log("profile is: ");
+		console.log(currUser);
+		firstNameInput.innerHTML = currUser.firstName;
+
+		lastNameInput.setAttribute("rows", "1");
+		lastNameInput.setAttribute("cols", "30");
+		lastNameInput.innerHTML = currUser.lastName;
+
+		imageInput.setAttribute("rows", "1");
+		imageInput.setAttribute("cols", "30");
+		imageInput.innerHTML = currUser.image;
+
+		yearInput.setAttribute("rows", "1");
+		yearInput.setAttribute("cols", "30");
+		yearInput.innerHTML = currUser.year;
+
+		majorInput.setAttribute("rows", "1");
+		majorInput.setAttribute("cols", "30");
+		majorInput.innerHTML = currUser.major;
+
+		firstNameNode.appendChild(firstNameInput);
+		lastNameNode.appendChild(lastNameInput);
+		imageNode.appendChild(imageInput);
+		yearNode.appendChild(yearInput);
+		majorNode.appendChild(majorInput);
+
+
+		modal.style.display = "block";
+		span.onclick = function () {
+			closeModal();
+
+		}
+		window.onclick = function (event) {
+			if (event.target == modal) {
+				console.log("this is where i am");
+				if (isYourProfile) {
+					closeModal();
+				} else {
+					closeRatingModal();
+				}
+			}
+		}
+	} else {
+		var modal = document.getElementById('ratingModal');
+		var span = document.getElementsByClassName("close")[1];
+
+		var ratingInput = document.createElement("textarea");
+		ratingInput.setAttribute("rows", "1");
+		ratingInput.setAttribute("cols", "30");
+		ratingInput.innerHTML = "1";
+
+		ratingNode.appendChild(ratingInput);
+
+		modal.style.display = "block";
+		span.onclick = function () {
+			closeRatingModal();
+		}
+		window.onclick = function (event) {
+			if (event.target == modal) {
+				closeRatingModal();
+			}
+		}
+	}
 }
