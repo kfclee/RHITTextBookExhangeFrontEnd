@@ -6,14 +6,48 @@ var order;
 var editForm = false;
 var isYourBook = true;
 var editBookButton = document.getElementById("editBook");
-var authorsNode = document.getElementById("authorsInput");
-var ISBNNode = document.getElementById("ISBNInput");
-var conditionNode = document.getElementById("conditionInput");
-var courseNode = document.getElementById("courseInput");
-var subjectNode = document.getElementById("subjectInput");
-var priceNode = document.getElementById("priceInput");
-var commentsNode = document.getElementById("commentsInput");
+var userID = 1;
+
+var title = document.getElementById("title");
+var titleText = title.appendChild(document.createElement('p'));
 var titleNode = document.getElementById("titleInput");
+var titleInput = document.createElement("textarea");
+
+var author = document.getElementById("author");
+var authorText = author.appendChild(document.createElement('p'));
+var authorsNode = document.getElementById("authorsInput");
+var authorsInput = document.createElement("textarea");
+
+
+var isbn = document.getElementById("isbn");
+var isbnText = isbn.appendChild(document.createElement('p'));
+var ISBNNode = document.getElementById("ISBNInput");
+var ISBNInput = document.createElement("textarea");
+
+var condition = document.getElementById("condition");
+var conditionText = condition.appendChild(document.createElement('p'));
+var conditionNode = document.getElementById("conditionInput");
+var conditionInput = document.createElement("textarea");
+
+var course = document.getElementById("course");
+var courseText = course.appendChild(document.createElement('p'));
+var courseNode = document.getElementById("courseInput");
+var courseInput = document.createElement("textarea");
+
+var subject = document.getElementById("subject");
+var subjectText = subject.appendChild(document.createElement('p'));
+var subjectNode = document.getElementById("subjectInput");
+var subjectInput = document.createElement("textarea");
+
+var price = document.getElementById("price");
+var priceText = price.appendChild(document.createElement('p'));
+var priceNode = document.getElementById("priceInput");
+var priceInput = document.createElement("textarea");
+
+var sellerComments = document.getElementById("seller-comments");
+var commentsText = sellerComments.appendChild(document.createElement('p'));
+var commentsNode = document.getElementById("commentsInput");
+var commentsInput = document.createElement("textarea");
 
 // Load book from browser session storage
 function loadBook() {
@@ -35,6 +69,8 @@ function loadBook() {
         book = JSON.parse(bookToViewString);
         user = JSON.parse(buyerToViewString);
         order = JSON.parse(orderToViewString);
+        console.log("order is: ");
+        console.log(order);
     }
 }
 
@@ -65,7 +101,8 @@ function saveBook() {
         dataType: 'JSON',
         success: function (data) {
             if (data) {
-                //redirect to their profile?
+                loadBookInfo();
+                return false;
             } else {
                 console.log("Book info could not be updated");
             }
@@ -124,28 +161,15 @@ function loadImage() {
 }
 
 function loadBookInfo() {
-    console.log("loading book info");
     var bookDiv = document.getElementById("book-info");
-    var title = document.getElementById("title");
-    var author = document.getElementById("author");
-    var isbn = document.getElementById("isbn");
-    var condition = document.getElementById("condition");
-    var course = document.getElementById("course");
-    var subject = document.getElementById("subject");
-    var price = document.getElementById("price");
-    var titleText = title.appendChild(document.createElement('p'));
     titleText.textContent = book.title;
-    var authorText = author.appendChild(document.createElement('p'));
+    console.log("authors are: ");
+    console.log(book);
     authorText.textContent = book.authors;
-    var isbnText = isbn.appendChild(document.createElement('p'));
     isbnText.textContent = "ISBN: " + book.ISBN;
-    var conditionText = condition.appendChild(document.createElement('p'));
     conditionText.textContent = "Condition: " + book.condition;
-    var subjectText = subject.appendChild(document.createElement('p'));
     subjectText.textContent = "Subject: " + book.subject;
-    var courseText = course.appendChild(document.createElement('p'));
     courseText.textContent = "Class: " + book.course;
-    var priceText = price.appendChild(document.createElement('p'));
     priceText.textContent = "$" + order.price;
 }
 
@@ -157,7 +181,6 @@ function loadBuyerInfo() {
     var email = document.getElementById("email");
     var followers = document.getElementById("followers");
     var date = document.getElementById("date");
-    var sellerComments = document.getElementById("seller-comments");
 
     var sellerNameText = sellerName.appendChild(document.createElement('p'));
     sellerNameText.textContent = "Seller: " + user.firstName + " " + user.lastName;
@@ -171,7 +194,6 @@ function loadBuyerInfo() {
     var dateText = date.appendChild(document.createElement('p'));
     dateText.textContent = "Originally posted on: 10/20/2016";
 
-    var commentsText = sellerComments.appendChild(document.createElement('p'));
     commentsText.textContent = "Seller Comments: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi odio tortor, tempor sed turpis vel, facilisis pellentesque nulla. Cras dapibus ligula eros, quis dictum purus semper finibus. Nulla non ligula sed elit aliquam sollicitudin aliquam a                                  nibh. Nam eget ante ut lacus commodo congue et sed lacus. Integer fermentum tristique lacinia. Ut vulputate posuere lorem, a consectetur mi eleifend lacinia. Suspendisse est urna, luctus rutrum lorem et, semper semper dui.";
 }
 
@@ -180,42 +202,34 @@ function editBook() {
         var modal = document.getElementById('myModal');
         var span = document.getElementsByClassName("close")[0];
 
-        var titleInput = document.createElement("textarea");
         titleInput.setAttribute("rows", "1");
         titleInput.setAttribute("cols", "30");
         titleInput.innerHTML = book.title;
 
-        var authorsInput = document.createElement("textarea");
         authorsInput.setAttribute("rows", "1");
         authorsInput.setAttribute("cols", "30");
         authorsInput.innerHTML = book.authors;
 
-        var ISBNInput = document.createElement("textarea");
         ISBNInput.setAttribute("rows", "1");
         ISBNInput.setAttribute("cols", "30");
         ISBNInput.innerHTML = book.ISBN;
 
-        var conditionInput = document.createElement("textarea");
         conditionInput.setAttribute("rows", "1");
         conditionInput.setAttribute("cols", "30");
         conditionInput.innerHTML = book.condition;
 
-        var courseInput = document.createElement("textarea");
         courseInput.setAttribute("rows", "1");
         courseInput.setAttribute("cols", "30");
         courseInput.innerHTML = book.course;
 
-        var subjectInput = document.createElement("textarea");
         subjectInput.setAttribute("rows", "1");
         subjectInput.setAttribute("cols", "30");
         subjectInput.innerHTML = book.subject;
 
-        var priceInput = document.createElement("textarea");
         priceInput.setAttribute("rows", "1");
         priceInput.setAttribute("cols", "30");
         priceInput.innerHTML = order.price;
 
-        var commentsInput = document.createElement("textarea");
         commentsInput.setAttribute("rows", "1");
         commentsInput.setAttribute("cols", "30");
         commentsInput.innerHTML = order.commentsText;
@@ -268,19 +282,33 @@ function closeModal() {
     commentsNode.removeChild(commentsNode.firstChild);
 }
 
+function submit() {
+    closeModal();
+    if (isYourBook) {
+        book.title = titleInput.value;
+        book.ISBN = ISBNInput.value;
+        book.authors = authorsInput.value;
+        book.subject = subjectInput.value;
+        book.condition = conditionInput.value;
+        book.course = courseInput.value;
+        order.price = priceInput.value;
+        console.log(book);
+        saveBook();
+    } else{
+
+    }
+}
+
 $(document).ready(function () {
-    console.log("document ready!");
     //if (window.location.pathname.indexOf('editBookDetails') > -1) {
-        editForm = true;
-        loadBook();
-        loadImage();
-        setup();
+    editForm = true;
+    loadBook();
+    loadImage();
+    setup();
     //}
 });
 
 function setup() {
-    console.log("setting up");
-
     var bookDiv = document.getElementById("book-info");
     var sellerDiv = document.getElementById("seller-info");
 
@@ -294,7 +322,6 @@ function setup() {
 
     var favButton = document.getElementById("fav-button");
     var editBook = document.getElementById("editBook");
-    console.log(editBook);
     editBook.addEventListener("click", editBook, false);
     editBookButton.innerHTML = "Favorite Book";
     if (isYourBook) {

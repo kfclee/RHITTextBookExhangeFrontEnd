@@ -1,26 +1,43 @@
+
+var nameDiv = document.getElementById("name");
 var firstNameNode = document.getElementById("firstNameInput");
+var nameText = nameDiv.appendChild(document.createElement('p'));
+var firstNameInput = document.createElement("textarea");
+
+var lastName = document.getElementById("lastName");
 var lastNameNode = document.getElementById("lastNameInput");
-var imageNode = document.getElementById("imageInput");
+var lastNameInput = document.createElement("textarea");
+
+var year = document.getElementById("year");
 var yearNode = document.getElementById("yearInput");
+var yearText = year.appendChild(document.createElement('p'));
+var yearInput = document.createElement("textarea");
+
+var major = document.getElementById("major");
 var majorNode = document.getElementById("majorInput");
+var majorText = major.appendChild(document.createElement('p'));
+var majorInput = document.createElement("textarea");
+
+var sold = document.getElementById("sold");
+var soldText = major.appendChild(document.createElement('p'));
+
+var bought = document.getElementById("bought");
+var boughtText = major.appendChild(document.createElement('p'));
+
+var profileImage = document.getElementById("profile-image");
+var image = profileImage.appendChild(document.createElement('img'));
+var imageInput = document.createElement("textarea");
+var imageNode = document.getElementById("imageInput");
+
 var ratingNode = document.getElementById("ratingInput");
 var isYourProfile = true;
 var editProfileButton = document.getElementById("editProfile");
-var profileData;
+var apiUrl = "http://localhost:3000/";
+var profile;
 (function () {
+	"use strict";
 	setup();
-	profileData = [{
-		image: "./images/user-blank.png",
-		firstName: "John",
-		lastName: "Doe",
-		year: "Senior",
-		major: "Computer Science",
-		bought: 3,
-		sold: 4,
-		rating: 95
-	}];
-
-	selling = [{
+	var selling = [{
 		image: './images/book.png',
 		title: 'title1',
 		price: 'price1'
@@ -41,7 +58,7 @@ var profileData;
 			price: 'price4'
 		}];
 
-	buying = [{
+	var buying = [{
 		image: './images/book.png',
 		title: 'title3',
 		price: 'price3'
@@ -55,29 +72,14 @@ var profileData;
 	var isSellinghtml = " is selling:</p></div>";
 	var isBuyinghtml = " is looking for:</p></div>";
 
-	for (var i = 0; i < profileData.length; i++){
-		var html = "<div id='img'><img id='profilePic' src=" + profileData[i].image + "></img></div>";
-		html += "<div id='details'><p>" + profileData[i].firstName + " " + profileData[i].lastName + "</p>";
-		html += "<p>" + profileData[i].year + ", " + profileData[i].major + " major</p>";
-		html += "<p>Bought: " + profileData[i].bought + " books</p>";
-		html += "<p>Sold: " + profileData[i].sold + " books</p>";
-		html += "<p>Rating: " + profileData[i].rating + "%</p>";
-		html += "</div>";
-		// console.log(searchdiv);
-		isSellinghtml = "<div class='header'><p>" + profileData[i].firstName + isSellinghtml;
-		isBuyinghtml = "<div class='header'><p>" + profileData[i].firstName + isBuyinghtml;
-		var info = document.getElementById("info");
-		console.log(info);
-		
-		info.innerHTML += html;
-	}
+
 
 	var sellingdiv = document.getElementById('selling');
 	sellingdiv.innerHTML += isSellinghtml;
 	console.log(sellingdiv);
-	for (var i = 0; i < selling.length; i++){
-		var html = "<div><div><p>"+selling[i].title+"</p>";
-		html+="<p>"+selling[i].price+"</p></div>";
+	for (var i = 0; i < selling.length; i++) {
+		var html = "<div><div><p>" + selling[i].title + "</p>";
+		html += "<p>" + selling[i].price + "</p></div>";
 		html += "<div><img src=" + selling[i].image + "></img></div></div></br>";
 
 		sellingdiv.innerHTML += html;
@@ -85,9 +87,9 @@ var profileData;
 	var buyingdiv = document.getElementById('buying');
 	console.log(buyingdiv);
 	buyingdiv.innerHTML += isBuyinghtml;
-	for (var i = 0; i < buying.length; i++){
-		var html = "<div><div><p>"+buying[i].title+"</p>";
-		html+="<p>"+buying[i].price+"</p></div>";
+	for (var i = 0; i < buying.length; i++) {
+		var html = "<div><div><p>" + buying[i].title + "</p>";
+		html += "<p>" + buying[i].price + "</p></div>";
 		html += "<div><img src=" + buying[i].image + "></img></div></div></br>";
 
 		buyingdiv.innerHTML += html;
@@ -95,11 +97,27 @@ var profileData;
 })();
 
 function setup() {
-	console.log("in setup");
     editProfileButton.innerHTML = "Rate User";
     if (isYourProfile) {
         editProfileButton.innerHTML = "Edit Profile";
+	}
+	getProfiles();
+	loadImage('images/user-blank.png');
+}
+
+function submit() {
+	if (isYourProfile) {
+        profile.firstName = firstNameInput.value;
+		profile.lastName = lastNameInput.value;
+		profile.year = year.value;
+		profile.major = majorInput.value;
+		profile.image = imageInput.value;
+		saveProfile();
+		loadImage(profile.image);
+    } else {
+
     }
+	closeModal();
 }
 
 function editProfile() {
@@ -107,30 +125,27 @@ function editProfile() {
         var modal = document.getElementById('myModal');
         var span = document.getElementsByClassName("close")[0];
 
-        var firstNameInput = document.createElement("textarea");
         firstNameInput.setAttribute("rows", "1");
         firstNameInput.setAttribute("cols", "30");
-        firstNameInput.innerHTML = profileData[0].firstName;
+		console.log("profile is: ");
+		console.log(profile);
+        firstNameInput.innerHTML = profile.firstName;
 
-        var lastNameInput = document.createElement("textarea");
         lastNameInput.setAttribute("rows", "1");
         lastNameInput.setAttribute("cols", "30");
-        lastNameInput.innerHTML = profileData[0].lastName;
+        lastNameInput.innerHTML = profile.lastName;
 
-        var imageInput = document.createElement("textarea");
         imageInput.setAttribute("rows", "1");
         imageInput.setAttribute("cols", "30");
-        imageInput.innerHTML = profileData[0].image;
+        imageInput.innerHTML = profile.image;
 
-        var yearInput = document.createElement("textarea");
         yearInput.setAttribute("rows", "1");
         yearInput.setAttribute("cols", "30");
-        yearInput.innerHTML = profileData[0].year;
+        yearInput.innerHTML = profile.year;
 
-        var majorInput = document.createElement("textarea");
         majorInput.setAttribute("rows", "1");
         majorInput.setAttribute("cols", "30");
-        majorInput.innerHTML = profileData[0].major;
+        majorInput.innerHTML = profile.major;
 
         firstNameNode.appendChild(firstNameInput);
         lastNameNode.appendChild(lastNameInput);
@@ -196,29 +211,120 @@ function closeModal() {
 }
 
 
-	var addNewButton = "<button class='newBook' href=''>+ Add New</button>";
-	sellingdiv.innerHTML += addNewButton;
-	buyingdiv.innerHTML += addNewButton;
+var addNewButton = "<button class='newBook' href=''>+ Add New</button>";
+var sellingdiv = document.getElementById("selling");
+sellingdiv.innerHTML += addNewButton;
+var buyingdiv = document.getElementById("buying");
+buyingdiv.innerHTML += addNewButton;
 
 function myFunction() {
 	var elm = document.getElementById('myFile'),
-    img = elm.files[0],
-    fileName = img.name, // not path
-    fileSize = img.size; // bytes
-    console.log(img);
-    console.log(fileName);
-    console.log(fileSize);
+		img = elm.files[0],
+		fileName = img.name, // not path
+		fileSize = img.size; // bytes
 
-// By Parsing File
+	// By Parsing File
 	var reader = new FileReader(),
-    binary, base64;
+		binary, base64;
 	reader.addEventListener('loadend', function () {
-    	binary = reader.result; // binary data (stored as string), unsafe for most actions
-    	base64 = btoa(binary); // base64 data, safer but takes up more memory
-    	// console.log(binary);
-    	console.log(base64);
+		binary = reader.result; // binary data (stored as string), unsafe for most actions
+		base64 = btoa(binary); // base64 data, safer but takes up more memory
+		// console.log(binary);
+		console.log(base64);
 		var imgTag = document.getElementById("profilePic");
 		imgTag.setAttribute("src", "data:image/png;base64," + base64);
 	}, false);
 	reader.readAsBinaryString(img);
+}
+
+function profileClickHandler(profile) {
+	var error = false;
+	function profileWithID(thisProfile) {
+		return thisProfile._id === profile._id;
+	}
+
+	var profileToView = books.filter(profileWithID)[0];
+
+	try {
+		// serialize it into a string
+		var profileToViewString = JSON.stringify(profileToView);
+		sessionStorage.setItem("profileToView", profileToViewString);
+	} catch (e) {
+		alert("Error when writing to Session Storage " + e);
+		error = true;
+	}
+	if (!error) {
+		window.location = "profile.html";
+		return false;
+	}
+}
+
+// Load book from browser session storage
+function loadProfile() {
+    var error = false;
+    var profileToViewString;
+    try {
+        profileToViewString = sessionStorage.getItem("profileToView");
+    } catch (e) {
+        alert("Error when reading from Session Storage " + e);
+        error = true;
+        window.location = "index.html";
+        return false;
+    }
+    if (!error) {
+        profile = JSON.parse(profileToViewString);
+    }
+}
+
+function loadProfileInfo() {
+    var profileDiv = document.getElementById("info");
+	nameText.textContent = profile.firstName + " " + profile.lastName;
+	yearText.textContent = "Year is: " + profile.year;
+	majorText.textContent = profile.major;
+	soldText.textContent = "Sold: " + profile.sellHistory.length + " books";
+	boughtText.textContent = "Bought: " + profile.buyHistory.length + " books";
+}
+
+function getProfiles() {
+	$.ajax({
+		url: apiUrl + "users/",
+		type: 'GET',
+		dataType: 'JSON',
+		success: function (data) {
+			if (data) {
+				profile = data[0];
+				loadProfileInfo();
+			} else {
+				console.log("Book info could not get got");
+			}
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	})
+}
+
+function saveProfile() {
+    $.ajax({
+        url: apiUrl + "users/" + profile._id,
+        type: 'PUT',
+        data: profile,
+        dataType: 'JSON',
+        success: function (data) {
+            if (data) {
+				loadProfileInfo();
+                return false;
+            } else {
+                console.log("Profile info could not be updated");
+            }
+        },
+        error: function (req, status, err) {
+            console.log(err, status, req);
+        }
+    });
+    return;
+}
+
+function loadImage(imagePath) {
+    image.setAttribute('src', imagePath);
 }
