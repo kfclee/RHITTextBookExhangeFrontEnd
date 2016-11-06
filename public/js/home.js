@@ -90,7 +90,7 @@
 	function populateOrders() {
 		var buyDiv = document.getElementById('buy-search-div');
 		for(var i=0; i<buyOrders.length; i++) {
-			var thisUser, thisBook, thisOrder;
+			var thisUser, thisBook, thisOrder; 
 
 			books.forEach(function (book) {
 				if(buyOrders[i].textbook === book._id) {
