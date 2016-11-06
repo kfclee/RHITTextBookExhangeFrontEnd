@@ -262,10 +262,7 @@ function editBook() {
 
         commentsInput.setAttribute("rows", "1");
         commentsInput.setAttribute("cols", "30");
-        commentsInput.innerHTML = order.commentsText;
-
-
-
+        commentsInput.innerHTML = order.description;
 
         titleNode.appendChild(titleInput);
         authorsNode.appendChild(authorsInput);
@@ -276,17 +273,17 @@ function editBook() {
         priceNode.appendChild(priceInput);
         commentsNode.appendChild(commentsInput);
 
-
         modal.style.display = "block";
         span.onclick = function () {
             closeModal();
-
         }
+
         window.onclick = function (event) {
             if (event.target == modal) {
                 closeModal();
             }
         }
+
     } else {
         var favorited = document.getElementById("favorited");
         if (editBookButton.innerHTML == "Favorite Book") {
