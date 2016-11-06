@@ -108,7 +108,6 @@
                     }
                     return;
                 })
-
                 
                 img.click(function () {
                     bookClickHandler(thisBook, thisOrder, thisBuyer);
