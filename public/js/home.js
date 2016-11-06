@@ -179,6 +179,7 @@
 				return;
 			});
 
+			console.log(img, thisBook, thisOrder, thisUser);
     		stupidClosures(img, thisBook, thisOrder, thisUser);
 
 		}

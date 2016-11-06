@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 	var apiUrl = "http://localhost:3000/";
-	var books, currUser, buyOrders, buyOrderBooks, sellOrders, sellOrderBooks, currUserID;
+	var books, currUser, buyOrders, sellOrders, books, currUserID;
 
 	var isSellinghtml = " is selling:</p></div>";
 	var isBuyinghtml = " is looking for:</p></div>";
@@ -11,6 +11,7 @@
 		getCurrentUser();
 		getBuyOrders();
 		getSellOrders();
+		getBooks();
 		setTimeout(function () {populateOrders()}, 300);
 	}
 
@@ -52,7 +53,6 @@
             }
         });
 
-		setTimeout(function() {populateBuyOrderBooks()}, 100);
 	}
 
 	function getSellOrders() {
@@ -72,54 +72,32 @@
             }
         });
 
-        setTimeout(function () {populateSellOrderBooks()}, 100);
 	}
 
-	function populateBuyOrderBooks() {
-		buyOrderBooks = [];
-		for(var i = 0; i < buyOrders.length; i++) {
-			$.ajax({
-	            url: apiUrl + "books/" + buyOrders[i].textbook,
-	            type: 'GET',
-	            dataType: 'JSON',
-	            success: function (data) {
-	                if (data) {
-	                    buyOrderBooks.push(data);
-	                } else {
-	                    console.log("Buy order books could not get got");
-	                }
-	            },
-	            error: function (req, status, err) {
-	                console.log(err, status, req);
-	            }
-        	});
-		}
-	}
-
-	function populateSellOrderBooks() {
-		sellOrderBooks = [];
-		for(var i = 0; i < sellOrders.length; i++) {
-			$.ajax({
-	            url: apiUrl + "books/" + sellOrders[i].textbook,
-	            type: 'GET',
-	            dataType: 'JSON',
-	            success: function (data) {
-	                if (data) {
-	                    sellOrderBooks.push(data);
-	                } else {
-	                    console.log("Sell order books could not get got");
-	                }
-	            },
-	            error: function (req, status, err) {
-	                console.log(err, status, req);
-	            }
-        	});
-		}
+	function getBooks() {
+		$.ajax({
+            url: apiUrl + "books/",
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                	books = data;
+                } else {
+                    console.log("Buy order books could not get got");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
+            }
+    	});
 	}
 
 	function populateOrders() {
-		// for (var i = 0; i < profileData.length; i++){
-		var html = "<div id='img'><img id='profilePic' src=" + currUser.profilePicture + "></img></div>";
+		isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
+		isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
+
+		// var html = "<div id='img'><img id='profilePic' src=" + currUser.profilePicture + "></img></div>";
+		var html = "<div id='img'><img id='profilePic' src='images/user-blank.png'></div>"
 		html += "<div id='details'><p>" + currUser.firstName + " " + currUser.lastName + "</p>";
 		html += "<p>" + currUser.year + ", " + currUser.major + " major</p>";
 		html += "<p>Bought: " + currUser.buyHistory.length + " books</p>";
@@ -127,69 +105,143 @@
 		html += "<p>Rating: " + currUser.rating + "/5</p>";
 		html += "</div>";
 		// console.log(searchdiv);
-		isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
-		isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
 		var info = document.getElementById("info");
 		
 		info.innerHTML += html;
-		// }
 
-		var sellingdiv = document.getElementById('selling');
-		sellingdiv.innerHTML += isSellinghtml;
-		for (var i = 0; i < sellOrders.length; i++){
-			// console.log("Seller: " + sellOrders[i].seller);
-			// console.log("CurrUser: " + currUserID);
-			if  (sellOrders[i].seller === currUserID) {
-				for (var j  = 0; j < sellOrderBooks.length; j++) {
-					if(sellOrders[i].textbook === sellOrderBooks[j]._id) {
+		var sellDiv = document.getElementById('selling');
+		sellDiv.innerHTML += isSellinghtml;
+		for(var i=0; i<sellOrders.length; i++) {
+			var thisBook, thisOrder;
 
-						//IMPORTANT: When you figure whatever this equality issue is out, fix it in home.js as well. 
-
-						console.log(typeof sellOrders[i].textbook + " " + sellOrders[i].textbook);
-						console.log(typeof sellOrderBooks[i]._id + " " + sellOrderBooks[i]._id);
-						console.log(sellOrders[i].textbook === sellOrderBooks[j]._id); //what the actual fuck, JS. Go home, you're drunk
-						var html = "<div><div><p>"+sellOrderBooks[i].title+"</p>";
-						html+="<p>"+sellOrders[i].price+"</p></div>";
-						// html += "<div><img src=" + sellOrderBooks[i].imagePath + "></img></div></div></br>";
-						html += "<div><img src='./images/textbookcover.jpg'></div></div></br>"
-
-						sellingdiv.innerHTML += html;
-					}
+			books.forEach(function (book) {
+				if(sellOrders[i].textbook === book._id) {
+					thisOrder = sellOrders[i];
+					thisBook = book;
+					return;
 				}
-				
-			} else {
-				continue;
-			}
+				return;
+			});
+
+
+			var bookDiv = sellDiv.appendChild(document.createElement('div'));
+
+			var textDiv = bookDiv.appendChild(document.createElement('div'));
+			
+			var title = document.createElement('p');
+			title.innerHTML = thisBook.title;
+			textDiv.appendChild(title);
+			var price = document.createElement('p');
+			price.innerHTML = "$" + thisOrder.price;
+			textDiv.appendChild(price);
+
+			var imgDiv = bookDiv.appendChild(document.createElement('div'));
+			var img = document.createElement('img');
+			img.setAttribute('src', 'images/textbookcover.jpg');
+			img.setAttribute('id', 'sell-image' + i);
+			imgDiv.appendChild(img);
+
+			// users.forEach(function (user) {
+			// 	if (user._id === thisOrder.seller) {
+			// 		thisUser = user;
+			// 		return;
+			// 	}
+			// 	return;
+			// });
+	
+			console.log(img, thisBook, thisOrder, currUser);
+    		stupidClosures(img, thisBook, thisOrder, currUser);
+
 		}
-		var buyingdiv = document.getElementById('buying');
-		buyingdiv.innerHTML += isBuyinghtml;
-		for (var i = 0; i < buyOrders.length; i++){
-			if (buyOrders[i].buyer === currUserID) {
-				var html = "<div><div><p>"+buyOrderBooks[i].title+"</p>";
-				html+="<p>"+buyOrders[i].price+"</p></div>";
-				// html += "<div><img src=" + buyOrderBooks[i].imagePath + "></img></div></div></br>";
-				html += "<div><img src='./images/textbookcover.jpg'></div></div></br>"
+
+// ----------------------------------------------------------------------------------------------
 
 
-				buyingdiv.innerHTML += html;
-			} else {
-				continue;
-			}
+		var buyDiv = document.getElementById('buying');
+		buyDiv.innerHTML += isBuyinghtml;
+		for(var i=0; i<buyOrders.length; i++) {
+			var thisBook, thisOrder; 
+
+			books.forEach(function (book) {
+				if(buyOrders[i].textbook === book._id) {
+					thisOrder = buyOrders[i];
+					thisBook = book;
+					return;
+				}
+				return;
+			});
+
+			
+			var bookDiv = buyDiv.appendChild(document.createElement('div'));
+
+			var textDiv = bookDiv.appendChild(document.createElement('div'));
+			
+			var title = document.createElement('p');
+			title.innerHTML = thisBook.title;
+			textDiv.appendChild(title);
+			var price = document.createElement('p');
+			price.innerHTML = "$" + thisOrder.price;
+			textDiv.appendChild(price);
+
+			var imgDiv = bookDiv.appendChild(document.createElement('div'));
+			var img = document.createElement('img');
+			img.setAttribute('src', 'images/textbookcover.jpg');
+			img.setAttribute('id', 'buy-image' + i);
+			imgDiv.appendChild(img);
+
+			// users.forEach(function (user) {
+			// 	if (user._id === thisOrder.buyer) {
+			// 		thisUser = user;
+			// 		return;
+			// 	}
+			// 	return;
+			// });
+
+			console.log(img, thisBook, thisOrder, currUser);
+			stupidClosures(img, thisBook, thisOrder, currUser);
 		}
 
 
 		var addNewButton = "<button class='newBook' href=''>+ Add New</button>";
-		sellingdiv.innerHTML += addNewButton;
-		buyingdiv.innerHTML += addNewButton;
+		sellDiv.innerHTML += addNewButton;
+		buyDiv.innerHTML += addNewButton;
+
 	}
 
+	function stupidClosures(img, book, order, user) {
+		img.addEventListener("click", function () {
+			console.log(book, order, user);
+			bookClickHandler(book, order, user)
+		}, false);
+	}
 
+	function bookClickHandler(book, order, user) {
+        var error = false;
+
+        try {
+            // serialize it into a string
+            var bookToViewString = JSON.stringify(book);
+            sessionStorage.setItem("bookToView", bookToViewString);
+            
+            var orderToViewString = JSON.stringify(order);
+            sessionStorage.setItem("orderToView", orderToViewString);
+            
+            var userToViewString = JSON.stringify(user);
+            sessionStorage.setItem("userToView", userToViewString);
+        } catch (e) {
+            alert("Error when writing to Session Storage " + e);
+            error = true;
+        }
+        if (!error) {
+            window.location = "bookDetails.html";
+            return false;
+        }
+    }
 
 	$(window).on('load', function () {
         //load in initial state
         setup();
     });
-
 
 })();
 
